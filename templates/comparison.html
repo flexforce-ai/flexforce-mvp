@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{PAGE_TITLE}}</title>
+  <meta name="description" content="{{META_DESCRIPTION}}">
+  <link rel="canonical" href="https://flexforce.ai{{CANONICAL_PATH}}">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
+  <meta name="GPTBot" content="allow">
+  <meta name="ChatGPT-User" content="allow">
+  <meta name="ClaudeBot" content="allow">
+  <meta name="anthropic-ai" content="allow">
+  <meta name="PerplexityBot" content="allow">
+  <meta name="Google-Extended" content="allow">
+  <meta name="CCBot" content="allow">
+  <meta property="og:title" content="{{PAGE_TITLE}}">
+  <meta property="og:description" content="{{META_DESCRIPTION}}">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://flexforce.ai{{CANONICAL_PATH}}">
+  <meta property="article:author" content="Jack">
+  <meta property="article:published_time" content="{{PUB_DATE}}">
+  <meta name="citation_title" content="{{CITATION_TITLE}}">
+  <meta name="citation_publication_date" content="{{PUB_DATE}}">
+  <meta name="citation_author" content="Jack, FlexForce.ai">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  {{JSON_LD_BLOCK}}
+  <style>
+{{STYLES}}
+  </style>
+</head>
+<body>
+
+{{NAV}}
+
+<div class="breadcrumb">
+  <a href="/">home</a><span>›</span>
+  <a href="/compare/">compare</a><span>›</span>
+  flexforce vs {{COMPARE_TARGET}}
+</div>
+
+<div class="page-wrap">
+
+  <section class="hero">
+    <p class="hero-eyebrow">{{HERO_EYEBROW}}</p>
+    <h1>{{H1}}</h1>
+    <p class="hero-sub speakable-intro">{{HERO_SUB}}</p>
+    <a href="/#signup" class="hero-cta" data-utm-content="hero_cta">start your 30-day free pilot</a>
+    <p class="hero-note">no card required — cancel anytime</p>
+  </section>
+
+  <section class="section">
+    <h2 class="speakable-answer">{{TLDR_H2}}</h2>
+{{TLDR_PARAGRAPHS}}
+  </section>
+
+  <section class="section">
+    <h2>{{TABLE_H2}}</h2>
+{{COMPARE_TABLE}}
+  </section>
+
+{{BODY_SECTIONS}}
+
+  <section class="section">
+    <h2>Frequently asked questions — FlexForce vs {{COMPARE_TARGET_DISPLAY}}</h2>
+{{FAQ_BLOCK}}
+  </section>
+
+  <div class="cta-block">
+    <h2>{{CTA_HEADLINE}}</h2>
+    <p>{{CTA_BODY}}</p>
+    <a href="/#signup" class="cta-btn" data-utm-content="cta_block">start free pilot →</a>
+    <p class="cta-note">no credit card · cancel anytime · set up in 10 minutes</p>
+  </div>
+
+  <section class="section">
+    <h2>related pages</h2>
+    <div class="related-links">
+{{RELATED_LINKS_BLOCK}}
+    </div>
+  </section>
+
+</div>
+
+{{FOOTER}}
+
+{{TRACKING}}
+
+</body>
+</html>

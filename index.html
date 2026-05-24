@@ -10,6 +10,7 @@
 <title>FlexForce — The AI hiring manager for the trades.</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 62 62'%3E%3Crect x='6' y='6' width='50' height='50' rx='14' fill='%231d4d3d'/%3E%3Cpath d='M 18 18 L 30 18 L 30 22.5 L 23 22.5 L 23 27.5 L 28.5 27.5 L 28.5 32 L 23 32 L 23 44 L 18 44 Z' fill='%23f6f3ee'/%3E%3Cpath d='M 32 18 L 44 18 L 44 22.5 L 37 22.5 L 37 27.5 L 42 27.5 L 42 32 L 37 32 L 37 44 L 32 44 Z' fill='%23bef264'/%3E%3Ccircle cx='46' cy='46' r='3' fill='%23bef264'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <style>
   :root {
     --bg: #f6f3ee;
@@ -744,6 +745,56 @@
   footer .ff-word .dot { color: var(--accent); }
   footer a:hover { color: var(--bg-card); }
 </style>
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "FlexForce.ai",
+    "url": "https://flexforce.ai",
+    "logo": "https://flexforce.ai/logo.svg",
+    "description": "AI hiring manager for small home-service contractors. Calls every applicant within 60 seconds, screens in English or Spanish, verifies state licenses, books interviews.",
+    "founder": { "@type": "Person", "name": "Jack" },
+    "foundingDate": "2026",
+    "sameAs": ["https://flexforce.ai"]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "FlexForce.ai",
+    "url": "https://flexforce.ai",
+    "publisher": { "@type": "Organization", "name": "FlexForce.ai" },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://flexforce.ai/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "FlexForce",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "description": "AI hiring manager for HVAC, plumbing, electrical, and roofing contractors. Calls applicants in 60 seconds, screens in English or Spanish, verifies state licenses, books interviews.",
+    "offers": [
+      { "@type": "Offer", "name": "Starter", "price": "299", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "unitText": "month" } },
+      { "@type": "Offer", "name": "Growth", "price": "599", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "unitText": "month" } },
+      { "@type": "Offer", "name": "Premium", "price": "999", "priceCurrency": "USD", "priceSpecification": { "@type": "UnitPriceSpecification", "unitText": "month" } }
+    ],
+    "creator": { "@type": "Person", "name": "Jack" }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Jack",
+    "jobTitle": "Founder",
+    "worksFor": { "@type": "Organization", "name": "FlexForce.ai" },
+    "url": "https://flexforce.ai",
+    "description": "Solo founder of FlexForce.ai — the AI hiring manager for small home-service contractors."
+  }
+]
+</script>
 </head>
 <body>
 
@@ -762,7 +813,7 @@
       <a href="#how">How it works</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
-      <a href="#signup" class="nav-cta">Start pilot</a>
+      <a href="#signup" class="nav-cta" data-utm-content="nav_cta">Start pilot</a>
     </div>
   </div>
 </nav>
@@ -774,8 +825,8 @@
       <h1 class="headline">Reply to every applicant in <em>60 seconds.</em> Hire your next tech in 5 days.</h1>
       <p class="sub"><strong>FlexForce is the AI hiring manager for small home service businesses.</strong> It answers every applicant in 60 seconds, screens them in English or Spanish, books your interviews, and verifies their license — so you stop losing techs to ghosting.</p>
       <div class="cta-row">
-        <a href="#signup" class="btn btn-primary">Start your 30-day pilot →</a>
-        <a href="apply.html" class="btn btn-secondary">See what applicants get</a>
+        <a href="#signup" class="btn btn-primary" data-utm-content="hero_cta">Start your 30-day pilot →</a>
+        <a href="apply.html" class="btn btn-secondary" data-utm-content="hero_demo">See what applicants get</a>
       </div>
       <div class="trust-row">
         <span><span class="check">✓</span> Live in 30 minutes</span>
@@ -884,7 +935,7 @@
         <p>Open the live sample apply page — exactly what an HVAC tech sees when they land on your branded apply.flexforce.ai URL. Try the screening conversation. See the license-check flow.</p>
         <span class="link">Open the live demo →</span>
       </a>
-      <a href="#signup" class="demo-card">
+      <a href="#signup" class="demo-card" data-utm-content="demo_card">
         <h3>Get a live demo from Jack</h3>
         <p>Book a 15-minute walkthrough on Zoom. Bring your trickiest hiring scenario. I'll show you the owner dashboard and run a screening call on a real candidate of yours.</p>
         <span class="link">Book a 15-min call →</span>
@@ -912,7 +963,7 @@
           <li>Texas TDLR license check</li>
           <li>Email support from Jack</li>
         </ul>
-        <a href="#signup" class="btn btn-secondary">Start free pilot</a>
+        <a href="#signup" class="btn btn-secondary" data-utm-content="pricing_starter">Start free pilot</a>
       </div>
       <div class="plan featured">
         <div class="plan-badge">most popular</div>
@@ -927,7 +978,7 @@
           <li>Automated reference calls</li>
           <li>Priority chat support</li>
         </ul>
-        <a href="#signup" class="btn btn-primary">Start free pilot</a>
+        <a href="#signup" class="btn btn-primary" data-utm-content="pricing_growth">Start free pilot</a>
       </div>
       <div class="plan">
         <div class="plan-name">Premium</div>
@@ -941,7 +992,7 @@
           <li>Bias &amp; EEOC audit reports</li>
           <li>Founder-direct support from Jack</li>
         </ul>
-        <a href="#signup" class="btn btn-secondary">Start free pilot</a>
+        <a href="#signup" class="btn btn-secondary" data-utm-content="pricing_premium">Start free pilot</a>
       </div>
     </div>
   </div>
@@ -987,12 +1038,7 @@
       </div>
     </div>
 
-    <form class="signup-form" id="signupForm" action="https://formsubmit.co/jack@flexforce.ai" method="POST">
-      <input type="hidden" name="_subject" value="New FlexForce Pilot Signup">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_captcha" value="false">
-      <input type="hidden" name="_next" value="https://flexforce.ai/?signed_up=1">
-
+    <form class="signup-form" id="signupForm" onsubmit="return submitSignup(event)">
       <label for="name">Your name</label>
       <input type="text" id="name" name="name" required placeholder="Mike Rivera">
 
@@ -1037,12 +1083,17 @@
       <label for="pain">Biggest hiring headache right now (optional)</label>
       <textarea id="pain" name="pain" rows="3" placeholder="e.g., posted 3 ads this month, only got 2 callbacks"></textarea>
 
-      <button type="submit">Claim my free 30-day pilot →</button>
+      <div class="turnstile-wrap" style="margin: 4px 0 14px;">
+        <div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark" data-size="flexible"></div>
+      </div>
+
+      <button type="submit" id="submitBtn">Claim my free 30-day pilot →</button>
       <div class="form-note">Founder-led onboarding · No spam · Cancel anytime</div>
 
       <div class="success-msg" id="successMsg">
         ✓ Got it. Jack will reach out within 4 hours to schedule your onboarding.
       </div>
+      <div class="error-msg" id="errorMsg" style="display:none; margin-top:14px; padding:14px; background:rgba(220,38,38,0.10); border:1px solid #dc2626; border-radius:8px; color:#fecaca; font-size:13px; text-align:center;"></div>
     </form>
   </div>
 </section>
@@ -1096,15 +1147,235 @@
       </svg>
       <span class="ff-word">flexforce<span class="dot">.</span></span>
     </a>
-    <div>© 2026 FlexForce.ai · Built by Jack · <a href="#signup">Start pilot</a></div>
+    <div>© 2026 FlexForce.ai · Built by Jack · <a href="#signup" data-utm-content="footer_signup">Start pilot</a></div>
   </div>
 </footer>
 
 <script>
-  if (window.location.search.includes('signed_up=1')) {
-    document.getElementById('successMsg').classList.add('show');
-    setTimeout(() => document.getElementById('signupForm').scrollIntoView({behavior: 'smooth'}), 200);
+  async function submitSignup(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = document.getElementById('submitBtn');
+    const successMsg = document.getElementById('successMsg');
+    const errorMsg = document.getElementById('errorMsg');
+    const originalLabel = btn.textContent;
+
+    errorMsg.style.display = 'none';
+
+    // Read Turnstile token (Turnstile injects a hidden input named cf-turnstile-response)
+    const tokenInput = form.querySelector('[name="cf-turnstile-response"]');
+    const turnstileToken = tokenInput ? tokenInput.value : '';
+    if (!turnstileToken) {
+      errorMsg.textContent = 'Please complete the captcha above the button, then try again.';
+      errorMsg.style.display = 'block';
+      return false;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+    btn.style.opacity = '0.7';
+
+    const payload = {
+      name: form.name.value.trim(),
+      business: form.business.value.trim(),
+      trade: form.trade.value,
+      techs: form.techs.value,
+      state: form.state.value.trim(),
+      email: form.email.value.trim(),
+      phone: form.phone.value.trim(),
+      pain: form.pain.value.trim(),
+      'cf-turnstile-response': turnstileToken
+    };
+
+    try {
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || data.success !== true) {
+        throw new Error(data.message || `Submission failed (HTTP ${res.status}).`);
+      }
+
+      form.querySelectorAll('input, select, textarea, button').forEach(el => el.style.display = 'none');
+      const note = form.querySelector('.form-note');
+      if (note) note.style.display = 'none';
+      const tWrap = form.querySelector('.turnstile-wrap');
+      if (tWrap) tWrap.style.display = 'none';
+      successMsg.innerHTML = '✓ Got it. Check your inbox — I just sent you a Cal.com link to book your 15-minute onboarding. — Jack';
+      successMsg.classList.add('show');
+      setTimeout(() => successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+      btn.style.opacity = '1';
+      // Reset Turnstile so the user can retry
+      if (window.turnstile && tokenInput) {
+        try { window.turnstile.reset(); } catch (_) {}
+      }
+      errorMsg.textContent = err.message || 'Something went wrong. Please email jack@flexforce.ai directly and I will personally onboard you.';
+      errorMsg.style.display = 'block';
+    }
+    return false;
   }
+
+  // Backward compatibility: if anyone still lands with ?signed_up=1 (from old form),
+  // show the success message gracefully.
+  if (window.location.search.includes('signed_up=1')) {
+    const form = document.getElementById('signupForm');
+    if (form) {
+      form.querySelectorAll('input, select, textarea, button').forEach(el => el.style.display = 'none');
+      const note = form.querySelector('.form-note');
+      if (note) note.style.display = 'none';
+    }
+    document.getElementById('successMsg').classList.add('show');
+    setTimeout(() => document.getElementById('signupForm').scrollIntoView({ behavior: 'smooth' }), 200);
+  }
+</script>
+
+<!-- ============================================================
+     FlexForce tracking layer
+     Fill in the two keys below to activate GTM + PostHog.
+     Both load silently when keys are blank — site stays functional.
+     ============================================================ -->
+<script>
+  window.FLEXFORCE_GTM_ID = 'GTM-589NB6LK';
+  window.FLEXFORCE_POSTHOG_KEY = 'phc_ueQrvu38JbSTHgfAFJQ4XV4mRTj5A4fVgvUwVyktpDo9';
+  window.FLEXFORCE_POSTHOG_HOST = 'https://us.i.posthog.com';
+</script>
+
+<!-- Google Tag Manager (loads only when GTM ID is set) -->
+<script>
+(function() {
+  if (!window.FLEXFORCE_GTM_ID) return;
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer',window.FLEXFORCE_GTM_ID);
+})();
+</script>
+
+<!-- PostHog (loads only when PostHog key is set) -->
+<script>
+(function() {
+  if (!window.FLEXFORCE_POSTHOG_KEY) return;
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug getPageViewId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  posthog.init(window.FLEXFORCE_POSTHOG_KEY, {
+    api_host: window.FLEXFORCE_POSTHOG_HOST,
+    person_profiles: 'identified_only',
+    capture_pageview: true,
+    capture_pageleave: true
+  });
+})();
+</script>
+
+<!-- FlexForce page identity + UTM decoration + click/submit tracking -->
+<script>
+(function() {
+  window.flexforcePage = {
+    id: 'home',
+    type: 'home',
+    state: '',
+    trade: '',
+    wave: '0'
+  };
+  var P = window.flexforcePage;
+  var UTM_SOURCE = 'flexforce_content';
+  var UTM_MEDIUM = 'organic';
+
+  // Decorate lead-attribution CTAs with UTM params on load.
+  // Only links with data-utm-content are touched — internal nav stays clean.
+  function decorate() {
+    document.querySelectorAll('a[data-utm-content]').forEach(function(a) {
+      var raw = a.getAttribute('href') || '';
+      // Skip non-http, mailto/tel, and same-page hash anchors (no lead attribution).
+      if (!raw || raw.indexOf('mailto:') === 0 || raw.indexOf('tel:') === 0 || raw.charAt(0) === '#') return;
+      try {
+        var u = new URL(raw, window.location.origin);
+        u.searchParams.set('utm_source', UTM_SOURCE);
+        u.searchParams.set('utm_medium', UTM_MEDIUM);
+        u.searchParams.set('utm_campaign', P.id || 'unknown');
+        u.searchParams.set('utm_content', a.dataset.utmContent);
+        if (u.origin === window.location.origin) {
+          a.href = u.pathname + (u.search || '') + (u.hash || '');
+        } else {
+          a.href = u.toString();
+        }
+      } catch (e) {}
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', decorate);
+  } else {
+    decorate();
+  }
+
+  // Common payload-emit helper. Pushes to dataLayer (GTM), PostHog, gtag, Plausible.
+  function emit(eventName, props) {
+    var base = {
+      event: eventName,
+      page_id: P.id,
+      page_type: P.type,
+      page_state: P.state,
+      page_trade: P.trade,
+      page_wave: P.wave
+    };
+    var payload = Object.assign({}, base, props || {});
+    (window.dataLayer = window.dataLayer || []).push(payload);
+    if (window.posthog && typeof window.posthog.capture === 'function') {
+      window.posthog.capture(eventName, payload);
+    }
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', eventName, payload);
+    }
+    if (typeof window.plausible === 'function') {
+      window.plausible(eventName, { props: payload });
+    }
+  }
+  window.flexforceTrack = emit; // expose for ad-hoc events from app code
+
+  // Link clicks — every <a> on the page.
+  document.addEventListener('click', function(e) {
+    var a = e.target.closest && e.target.closest('a');
+    if (a) {
+      var href = a.getAttribute('href') || '';
+      var external = /^https?:\/\//i.test(href) && href.indexOf(window.location.origin) !== 0;
+      emit('link_click', {
+        link_url: href,
+        link_text: (a.innerText || a.textContent || '').trim().slice(0, 80),
+        link_class: a.className || '',
+        link_external: external,
+        utm_content: (a.dataset && a.dataset.utmContent) || ''
+      });
+      return;
+    }
+    // Button clicks — explicit buttons not wrapped in <a>.
+    var b = e.target.closest && e.target.closest('button');
+    if (b) {
+      emit('button_click', {
+        button_id: b.id || '',
+        button_text: (b.innerText || b.textContent || '').trim().slice(0, 80),
+        button_class: b.className || '',
+        button_type: b.type || '',
+        utm_content: (b.dataset && b.dataset.utmContent) || ''
+      });
+    }
+  }, true);
+
+  // Form submits — capture which form fired.
+  document.addEventListener('submit', function(e) {
+    var f = e.target;
+    if (!f || f.tagName !== 'FORM') return;
+    emit('form_submit', {
+      form_id: f.id || '',
+      form_action: f.getAttribute('action') || '',
+      form_class: f.className || ''
+    });
+  }, true);
+})();
 </script>
 
 </body>

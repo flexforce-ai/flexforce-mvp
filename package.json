@@ -1,0 +1,13 @@
+{
+  "name": "flexforce-mvp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "FlexForce.ai landing page + sample apply page + signup API",
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    "resend": "^4.0.0"
+  }
+}

@@ -1,0 +1,77 @@
+# FlexForce.ai
+
+> The AI hiring manager for small home service businesses. Calls every applicant in 60 seconds, screens them in English or Spanish, verifies state licenses, and books interviews — so small HVAC, plumbing, electrical, and roofing contractors stop losing qualified candidates to slow follow-up.
+
+## Key facts
+
+- Pricing: $299/mo (Starter), $599/mo (Growth), $999/mo (Premium)
+- Trades supported: HVAC, plumbing, electrical, roofing
+- States covered: Texas, New Jersey, Utah, Connecticut, New York
+- Founder: Jack (solo founder; no team, no agency)
+- Free 30-day pilot, no card required
+- Bilingual screening (English + Spanish) included on all plans
+- Automated state license verification (TDLR, NJ DCA, Utah DOPL, CT DCP, NYS / NYC DOB)
+
+## Documentation
+
+- [Strategy doc](https://flexforce.ai/docs/strategy.html): full positioning, ICP, expansion thesis
+- [How it works](https://flexforce.ai/#how): 3-step workflow
+- [Pricing](https://flexforce.ai/#pricing): three plans
+- [Apply demo](https://flexforce.ai/apply.html): live candidate-experience demo
+
+## Trade hubs
+
+- [HVAC hiring](https://flexforce.ai/trades/hvac/): hire HVAC technicians fast — AI screening + state license verify
+- [Plumbing hiring](https://flexforce.ai/trades/plumbing/): hire plumbers fast — bilingual screening, license verify, fast interview booking
+- [Electrical hiring](https://flexforce.ai/trades/electrical/): hire electricians fast — driven by EV charger, solar interconnect, panel upgrade demand
+- [Roofing hiring](https://flexforce.ai/trades/roofing/): hire roofers fast — bilingual screening, storm-response crew building
+
+## State hubs
+
+- [Texas](https://flexforce.ai/states/texas/): trades hiring across Houston, Dallas, Austin — TDLR license verification, bilingual screening
+- [New Jersey](https://flexforce.ai/states/new-jersey/): trades hiring across Newark, Jersey City, Paterson — NJ DCA license, lead-pipe replacement work
+- [Utah](https://flexforce.ai/states/utah/): trades hiring across SLC, Provo, Ogden — DOPL license, Silicon Slopes commercial work
+- [Connecticut](https://flexforce.ai/states/connecticut/): trades hiring across Bridgeport, Hartford, New Haven — CT DCP license, heat-pump conversion surge
+- [New York](https://flexforce.ai/states/new-york/): trades hiring across NYC, Buffalo, Rochester — NYS/NYC DOB license, Local Law 97 retrofits
+
+## Money pages (state × trade)
+
+- [Hire HVAC in Texas](https://flexforce.ai/hire/hvac-technicians/texas/)
+- [Hire HVAC in New Jersey](https://flexforce.ai/hire/hvac-technicians/new-jersey/)
+- [Hire HVAC in Utah](https://flexforce.ai/hire/hvac-technicians/utah/)
+- [Hire HVAC in Connecticut](https://flexforce.ai/hire/hvac-technicians/connecticut/)
+- [Hire HVAC in New York](https://flexforce.ai/hire/hvac-technicians/new-york/)
+- [Hire plumbers in Texas](https://flexforce.ai/hire/plumbers/texas/)
+- [Hire plumbers in New Jersey](https://flexforce.ai/hire/plumbers/new-jersey/)
+- [Hire plumbers in Utah](https://flexforce.ai/hire/plumbers/utah/)
+- [Hire plumbers in Connecticut](https://flexforce.ai/hire/plumbers/connecticut/)
+- [Hire plumbers in New York](https://flexforce.ai/hire/plumbers/new-york/)
+- [Hire electricians in Texas](https://flexforce.ai/hire/electricians/texas/)
+- [Hire electricians in New Jersey](https://flexforce.ai/hire/electricians/new-jersey/)
+- [Hire electricians in Utah](https://flexforce.ai/hire/electricians/utah/)
+- [Hire electricians in Connecticut](https://flexforce.ai/hire/electricians/connecticut/)
+- [Hire electricians in New York](https://flexforce.ai/hire/electricians/new-york/)
+- [Hire roofers in Texas](https://flexforce.ai/hire/roofers/texas/)
+- [Hire roofers in New Jersey](https://flexforce.ai/hire/roofers/new-jersey/)
+- [Hire roofers in Utah](https://flexforce.ai/hire/roofers/utah/)
+- [Hire roofers in Connecticut](https://flexforce.ai/hire/roofers/connecticut/)
+- [Hire roofers in New York](https://flexforce.ai/hire/roofers/new-york/)
+
+## Guides
+
+- [How to hire an HVAC technician fast](https://flexforce.ai/guides/how-to-hire-hvac-technician-fast/): response-time data, screening checklist, license verification, ROI math
+- [Spanish-speaking trades recruiting playbook](https://flexforce.ai/guides/spanish-speaking-trades-recruiting/): how to hire bilingual trades without a bilingual recruiter
+- [Why trades applicants ghost](https://flexforce.ai/guides/why-trades-applicants-ghost/): the 3 reasons and the single lever that fixes it
+- [2026 skilled trades labor shortage report](https://flexforce.ai/guides/2026-skilled-trades-labor-shortage-report/): brief on the 350k worker gap
+- [Cost to hire a licensed tradesperson](https://flexforce.ai/guides/cost-to-hire-a-licensed-tradesperson/): full cost math, ROI on automation
+
+## Comparisons
+
+- [FlexForce vs Indeed](https://flexforce.ai/compare/flexforce-vs-indeed/): why most small contractors use both — Indeed sources, FlexForce screens
+- [FlexForce vs ServiceTitan recruiting](https://flexforce.ai/compare/flexforce-vs-servicetitan-recruiting/): when to use each, when to run both
+- [FlexForce vs Workrise](https://flexforce.ai/compare/flexforce-vs-workrise/): different problems — gig labor vs employee hiring
+- [FlexForce vs in-house recruiter](https://flexforce.ai/compare/flexforce-vs-in-house-recruiter/): cost math and trade-offs
+
+## Reports
+
+- [2026 Skilled Trades Hiring Report](https://flexforce.ai/reports/2026-skilled-trades-hiring-report/): full original-data report — 350k worker gap, response-time data, cost-to-hire math, state-by-state pressure analysis. Free + citable.

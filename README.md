@@ -1,97 +1,211 @@
-# FlexForce.ai — Landing Page + MVP
+# FlexForce.ai — Landing + Signup MVP
 
-A deployable, static MVP for FlexForce.ai. Two pages, zero build step, lives on Vercel in under three minutes.
+Built by Jack. Solo, off-hours.
 
-Built by Jack, solo, in off-hours.
-
-## What's in this folder
+A deployable MVP for FlexForce.ai: marketing landing page, live candidate-experience demo, and a real serverless signup pipeline (CAPTCHA-protected, dual confirmation emails, Cal.com booking link).
 
 ```
 flexforce-mvp/
-├── index.html         The landing page (sells the product)
+├── index.html         Landing page (sells the product)
 ├── apply.html         Live candidate apply page demo (Mike's HVAC sample)
-├── vercel.json        Vercel static-deploy config
-├── README.md          This file — deploy + GTM playbook
+├── api/
+│   └── signup.js      Vercel serverless function — handles the signup form
+├── package.json       Declares the Resend dependency (Vercel auto-installs)
+├── vercel.json        Static + functions deploy config
+├── .env.example       Documented environment variables
+├── .gitignore         Ignores Vercel build, env files, macOS junk
+├── deploy.sh          One-shot initial setup script (GitHub + Vercel link)
+├── README.md          This file
 └── nextdoor.md        Ready-to-post Nextdoor copy variants
 ```
 
-No build process. No npm install. Just static files. Vercel hosts them for free.
+---
+
+## What the signup flow actually does now
+
+1. Visitor fills out the form on `index.html`
+2. They solve the Cloudflare Turnstile CAPTCHA (modern, no-puzzle, frictionless)
+3. JavaScript POSTs the form data + CAPTCHA token to `/api/signup` (Vercel serverless function)
+4. The function verifies the CAPTCHA token against Cloudflare's servers
+5. It sends two emails via Resend:
+   - **To Jack** at `jack@flexforce.ai` — a clean table with all the prospect's details, `reply-to` set to the prospect's email so a tap-reply goes straight to them
+   - **To the prospect** — a personal confirmation from Jack with a one-click Cal.com link to book the onboarding call
+6. Visitor sees an inline success message: *"Got it. Check your inbox — I just sent you a Cal.com link to book your 15-minute onboarding. — Jack"*
+
+Both emails fail gracefully — if anything goes wrong server-side, the prospect sees: *"Please email jack@flexforce.ai directly and I will personally onboard you."*
 
 ---
 
-## 1. Deploy to Vercel (3 minutes)
+## First-time setup (~15 minutes, one-time)
+
+You need accounts on five services. Four are free, one (custom domain email) is optional.
+
+### 1. Resend — for sending emails
+
+1. Sign up at [resend.com](https://resend.com) (free: 100 emails/day, 3,000/month)
+2. Add `flexforce.ai` as a verified domain: [resend.com/domains](https://resend.com/domains)
+3. Resend gives you DNS records to add at your domain registrar (DKIM, SPF, optionally DMARC)
+4. Wait 5–15 minutes for DNS to propagate, click verify
+5. Once verified, you can send `From: Jack at FlexForce <jack@flexforce.ai>` (otherwise emails get filtered as spam by Gmail/Outlook)
+6. Create an API key at [resend.com/api-keys](https://resend.com/api-keys), copy the `re_...` value
+
+**Pro tip:** if you don't want to set up the flexforce.ai domain in Resend right away, the API will fall back to Resend's default `onboarding@resend.dev` sender for testing. Just leave `MAIL_FROM_JACK` and `MAIL_FROM_SIGNUPS` unset until your domain is verified.
+
+### 2. Cloudflare Turnstile — for CAPTCHA
+
+1. Sign up at [cloudflare.com](https://cloudflare.com) if you don't already have an account (free)
+2. Go to [dash.cloudflare.com](https://dash.cloudflare.com) → **Turnstile** in the left sidebar
+3. Click **Add site**, name it `flexforce`, add hostnames: `flexforce.ai`, `www.flexforce.ai`, and `flexforce-mvp.vercel.app` (your Vercel preview URL — needed for testing before custom domain is live)
+4. Widget mode: **Managed** (best UX, mostly invisible)
+5. Copy the **Site Key** (public, goes in your HTML) and **Secret Key** (private, goes in Vercel env)
+
+After you have the site key, open `index.html` and find this line:
+
+```html
+<div class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="dark" data-size="flexible"></div>
+```
+
+Replace `1x00000000000000000000AA` (Cloudflare's test "always-pass" key, fine for local testing) with your real site key. Commit and push.
+
+### 3. Cal.com — for onboarding bookings
+
+1. Sign up at [cal.com](https://cal.com) (free)
+2. Pick a username — `jack-flexforce` recommended
+3. Create a new **Event Type**: name it "Pilot onboarding", duration 15 min, scheduling type "round robin" off (just you)
+4. Set availability: weekdays 9am–5pm in your timezone, weekends off
+5. Add a few thoughtful questions: "What trade?", "How many techs?", "What state are you in?", "What's the biggest hiring headache?"
+6. Get your booking link — should be `https://cal.com/jack-flexforce/pilot-onboarding`
+
+### 4. GitHub organization
+
+If `flexforce-ai` doesn't exist as a GitHub org yet, create it at [github.com/account/organizations/new](https://github.com/account/organizations/new) (free).
+
+### 5. Vercel — for hosting
+
+You already have this set up (the site is live at `flexforce-mvp.vercel.app`). The next steps connect the GitHub repo so deploys happen on `git push`.
+
+---
+
+## Connect GitHub → Vercel (one-time, the proper way)
+
+Two options. The CLI path is cleaner.
 
 ### Option A — Vercel CLI (recommended)
 
+From inside the `flexforce-mvp/` folder:
+
 ```bash
-# Install Vercel CLI once
-npm i -g vercel
+# Link this folder to a Vercel project (interactive)
+vercel link
 
-# From this folder
-cd flexforce-mvp
+# Add environment variables — paste the value when prompted, pick "Production"
+vercel env add RESEND_API_KEY production
+vercel env add TURNSTILE_SECRET_KEY production
+vercel env add JACK_EMAIL production
+vercel env add CAL_LINK production
+vercel env add MAIL_FROM_JACK production
+vercel env add MAIL_FROM_SIGNUPS production
 
-# Deploy a preview
-vercel
-
-# Promote to production
-vercel --prod
+# (Optional) Add the same vars for preview deploys
+vercel env add RESEND_API_KEY preview
+vercel env add TURNSTILE_SECRET_KEY preview
+# …and so on for the rest
 ```
 
-Vercel hands you a URL like `flexforce-mvp.vercel.app` instantly. Test there first.
+Then connect the GitHub repo for auto-deploy on push:
 
-### Option B — Drag-and-drop
+```bash
+# Push your code to GitHub (deploy.sh does this; or run manually)
+git remote add origin git@github.com:flexforce-ai/flexforce-mvp.git
+git push -u origin main
 
-1. Go to [vercel.com/new](https://vercel.com/new)
-2. Drag this entire `flexforce-mvp` folder onto the page
-3. Click Deploy
-4. Done in 60 seconds
+# Then in the Vercel dashboard:
+#   Settings → Git → Connect Git Repository → choose flexforce-ai/flexforce-mvp
+```
 
-### Connecting flexforce.ai (custom domain)
+After this, every `git push origin main` triggers a production deploy automatically.
 
-1. In the Vercel project: **Settings → Domains → Add**
-2. Enter `flexforce.ai`
-3. Vercel gives you two DNS records to add at your registrar (Cloudflare, Porkbun, GoDaddy, etc.):
-   - An `A` record for the root pointing to `76.76.21.21`
-   - A `CNAME` for `www` pointing to `cname.vercel-dns.com`
-4. Apex + www verified, HTTPS auto-issued — usually 5–15 minutes.
+### Option B — Vercel dashboard
 
-For the candidate-facing subdomain `apply.flexforce.ai` (for future use), add another CNAME once the real per-shop apply pages are built.
-
----
-
-## 2. Wire up the signup form (5 minutes)
-
-The signup form on `index.html` posts to **FormSubmit** — zero-signup email forwarding.
-
-**Default behavior:** Submissions go to `jack@flexforce.ai`.
-
-To activate the first time:
-1. Deploy the site
-2. Submit the form once with any valid email
-3. FormSubmit emails Jack a one-time confirmation link — click it
-4. From then on, every signup hits Jack's inbox as a clean table-formatted email
-
-### Want a better setup later? Three upgrade paths:
-
-- **Tally.so** — Replace the `<form>` block with a `<iframe>` Tally embed. Free up to 3 forms. Nicer dashboard, branching logic.
-- **Resend + Vercel serverless** — If signups should land in Supabase or fire a custom Slack ping. Requires moving from static to a Next.js project.
-- **Stripe Payment Link** — Replace one of the "Start pilot" CTAs with a Stripe Payment Link to collect a $99 refundable deposit. Reduces tire-kickers; raises conversion confidence on the call.
+1. Visit [vercel.com/new](https://vercel.com/new)
+2. Click **Import Git Repository** → pick `flexforce-ai/flexforce-mvp`
+3. Framework preset: **Other**
+4. Add env vars under **Environment Variables** before clicking Deploy
+5. Click **Deploy**
 
 ---
 
-## 3. Update the hard-coded bits before going live
+## Daily workflow — make changes, deploy
 
-Open `index.html` and search for these:
-- `jack@flexforce.ai` — currently set on `_subject`/`action`. Change if you'd rather route to a different inbox (e.g., `hello@flexforce.ai`).
-- `https://flexforce.ai/?signed_up=1` — change to your actual production domain once `flexforce.ai` is live.
-- "Mike's HVAC" / "Carlos R." in the hero phone mockup — keep as-is for now, or swap to a real first design-partner shop once you have one. Concrete > generic.
+Once everything is set up, the loop is just:
 
-Open `apply.html`:
-- "Mike's HVAC & Cooling" / Austin address / job details — these are the demo. Leave as-is until you build the per-shop apply page generator.
+```bash
+# Make changes locally
+vim index.html
+
+# Commit and push
+git add .
+git commit -m "Tighten the hero subhead"
+git push
+
+# Vercel auto-builds in ~30 seconds and ships to flexforce.ai
+```
+
+No CLI deploy commands. Git is the deploy pipeline. Vercel emails you when each build completes (or fails).
+
+### Branch + preview deploys
+
+For larger changes, work on a branch — Vercel automatically deploys preview URLs for every push:
+
+```bash
+git checkout -b try-new-headline
+# …make changes…
+git commit -am "Try the 'AI hiring manager' headline variant"
+git push -u origin try-new-headline
+```
+
+Vercel gives you a unique preview URL like `flexforce-mvp-git-try-new-headline-flexforce-ai.vercel.app`. Open a PR, test, merge to main when ready, production auto-deploys.
 
 ---
 
-## 4. The 500K gig-worker list — activation plan
+## Custom domain — connecting flexforce.ai
+
+You said the site already loads at `https://flexforce.ai`. If it doesn't yet, or you want to make the apex canonical instead of `www`:
+
+1. In Vercel: **Settings → Domains → Add Domain**
+2. Type `flexforce.ai`, click Add
+3. Vercel shows you the DNS records — usually:
+   - `A` record at root → `76.76.21.21`
+   - `CNAME` at `www` → `cname.vercel-dns.com`
+4. Add those at your DNS registrar (Cloudflare, Porkbun, GoDaddy, etc.)
+5. Verify in Vercel. Apex + www auto-issued SSL in ~5–15 min.
+
+To make the apex (no www) the canonical instead of www: **Settings → Domains → Edit** on `flexforce.ai` → set as primary, then on `www.flexforce.ai` set redirect to apex.
+
+---
+
+## Local dev (optional — only if you want to test the API function locally)
+
+```bash
+# Install dependencies
+npm install
+
+# Install Vercel CLI globally if you haven't
+npm i -g vercel
+
+# Create a .env file locally (copy from .env.example, fill in real values)
+cp .env.example .env
+# Edit .env with your real Resend + Turnstile keys
+
+# Run the dev server (serves static files AND runs the API function locally)
+vercel dev
+```
+
+You'll get a local URL like `http://localhost:3000`. Form submissions will POST to your local API which will send real emails using your real Resend key — useful for testing the email templates without redeploying.
+
+---
+
+## The 500K gig-worker list — activation plan
 
 You have leverage no other one-person founder has. Treat the list as a strategic asset, not a marketing channel.
 
@@ -111,83 +225,54 @@ Body links to a Tally or Typeform form with 3–4 questions:
 
 Optional fifth: *"Do you have any trade license or certification?"* (free text)
 
-Expected response: 8–15% = 40k–75k segmented leads. The "interested in skilled trades" subset alone is the most valuable cold list in the country for FlexForce sales.
+Expected response: 8–15% = 40k–75k segmented leads.
 
-### Week 2 — The dual product
+### Week 2 — Use the panel as your supply story
 
-**For FlexForce.ai (employer side):**
-Use the segmented data as a sales weapon. Every cold pitch opens with: *"I run a pre-vetted talent pool of 12,000 HVAC-interested workers in Texas. Want to be the first contractor they see when they're ready to apply?"* That converts a recruiting-software pitch into a talent-pool pitch — much higher close rate.
+Every FlexForce cold pitch now opens with: *"I run a pre-vetted talent pool of 12,000 HVAC-interested workers in Texas. Want to be the first contractor they see when they're ready to apply?"* — closes 3–5× better than a generic recruiting-software pitch.
 
-**For GigWise.ai (worker side):**
-Launch a free AI career copilot at `gigwise.ai`. The 500K is the launch audience. Email subject: *"Free — your personal AI career coach (helps you find $40+/hr jobs near you)"*. The copilot:
-- Suggests higher-paying gigs based on existing skills
-- Maps current experience to the trades that pay best in their state
-- Drafts their first résumé and first 5 cold applications
-- Notifies them when FlexForce employers in their state are hiring
+### Week 3+ — Launch GigWise.ai
 
-You get: engagement data, retention signals, language preference, geographic density. Every engaged worker = a calibrated training-data point for the audience-validation layer.
-
-### Week 3+ — Use the panel as paid micro-survey respondents
-
-When a FlexForce employer pastes a job post, GigWise.ai pings a real subset of the 500K matching that persona (e.g., 50 HVAC techs in TX) for 60-second micro-feedback at $1 each.
-
-They answer:
-- Would you apply to this? (1–10)
-- What's the first thing that turns you off?
-- What would you change?
-
-Employer pays $99 per posting validation. Worker earns $1. Jack keeps $49 (after panel payouts).
-
-This is the wedge GigWise.ai launches on. Real respondents beat synthetic until enough calibration data exists to synthesize confidently. The 500K makes that possible — no other competitor has anywhere close.
+Free AI career copilot at `gigwise.ai`. The 500K is the launch audience. See the strategy doc for full details on the audience-layer play.
 
 ---
 
-## 5. Posting on Nextdoor
+## Posting on Nextdoor
 
-See `nextdoor.md` for three ready-to-post variants. Key principles:
-
-- **Lead with the problem, not the product.** Nextdoor users tune out anything that smells like an ad.
-- **Hyperlocal first.** Post in Jack's own neighborhood first. Mention the geography ("looking for 5 Austin-area HVAC owners…").
-- **Soft CTA.** "DM me if curious" beats "click here."
-- **Be a real person.** Use first name, mention being local, offer to grab coffee.
+See `nextdoor.md` for three ready-to-post variants. Sign every post as Jack.
 
 ---
 
-## 6. What's next after deploy
+## Troubleshooting
 
-In order of leverage:
+**Form submits but I don't get an email:**
+- Check the Vercel function logs: `vercel logs --follow` (or the dashboard's Functions tab)
+- Most likely: `RESEND_API_KEY` not set in Vercel env, or the sender domain isn't verified in Resend yet (Resend silently rejects unverified senders).
 
-1. **Get 3 design partners.** Reach out to 25 local contractors. Offer 30-day free pilot. Take any conversation, even from someone who turns you down — their reasoning is the product roadmap.
-2. **Build the real screening flow.** The current `apply.html` is a polished mock. The real one needs Vapi + Twilio + a Supabase backend. Estimate 2 weeks of focused build for v1.
-3. **Ship one ATS integration.** Jobber is the easiest API. Build the webhook that pushes hired candidates into a Jobber team profile.
-4. **Real Stripe checkout for the $299/$599/$999 plans.** Until then, the pilot CTAs go to Calendly for onboarding calls.
+**CAPTCHA appears but submission fails:**
+- Check `TURNSTILE_SECRET_KEY` is set in Vercel
+- Check the Turnstile widget's hostnames in Cloudflare include both your Vercel URL and `flexforce.ai`
 
-Don't build a CRM. Don't build a marketing site CMS. Don't hire. Don't raise. Run lean. The first $20k MRR is sales velocity, not engineering elegance.
+**Confirmation email goes to spam:**
+- Verify `flexforce.ai` domain in Resend with DKIM + SPF
+- Add a DMARC record at `_dmarc.flexforce.ai` with `v=DMARC1; p=none; rua=mailto:jack@flexforce.ai`
+- First few sends always look suspicious — they "warm up" within a week
 
----
-
-## 7. Tracking conversions
-
-Drop a Plausible (`plausible.io`, $9/mo, privacy-friendly) or Vercel Analytics (free with Pro) snippet into the `<head>` of both HTML files. Track:
-- Hero CTA clicks (`#signup` anchor)
-- "See applicant experience" clicks
-- Form submissions
-- `apply.html` page visits, chat starts, chat completions
-
-The single most important number to watch in week one: **landing-page visitor → form-submission conversion rate.** Target 4–8%. Below 2% = the hero pitch isn't landing. Above 10% = the hero is overselling or the price is too low.
+**Build fails on Vercel:**
+- Most likely: `package.json` parse error or missing dep. Check the Vercel build logs — they're loud about it.
 
 ---
 
-## Brand notes — Modern Premium direction (locked in)
+## Brand notes — Modern Premium
 
 - **Palette**: forest green (`#1d4d3d`) + lime (`#bef264`) + warm cream (`#f6f3ee`) + deep forest (`#0f2922`)
-- **Type**: Inter at weights 400 (body), 500 (display). JetBrains Mono for eyebrows and tags. No Syne, no Fraunces, no serif anywhere.
-- **Voice**: Owner-to-owner. First-person from Jack where appropriate ("I built this because…"). Lowercase confident, not screaming.
-- **Logo mark**: rounded forest-green square, cream left F, lime right F, lime accent dot bottom-right.
-- **Wordmark**: lowercase `flexforce.` — the period is the brand. Always set the period in the primary green when on cream/white, in lime when on dark.
+- **Type**: Inter at weights 400/500. JetBrains Mono for small eyebrow numbers. No Syne, no Fraunces, no serif.
+- **Voice**: Owner-to-owner. First-person from Jack where appropriate. Lowercase confident, not screaming.
+- **Logo mark**: rounded forest-green square, cream left F, lime right F, lime accent dot bottom-right (proper SVG, not CSS shapes).
+- **Wordmark**: lowercase `flexforce.` — the period is the brand.
 
-Aesthetic reference shelf: Mercury · Linear · Ramp · Vercel.
+Aesthetic reference: Mercury · Linear · Ramp · Vercel.
 
 ---
 
-Built by Jack. Ship it Friday.
+Built by Jack. Ship Friday.

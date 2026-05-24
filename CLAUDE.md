@@ -35,7 +35,10 @@ flexforce-mvp/
 ├── api/
 │   └── signup.js       Vercel serverless function — handles the signup form
 ├── docs/
-│   └── strategy.html   Full strategy doc (positioning, ICP, GigWise.ai expansion, 500K list plan)
+│   ├── strategy.html         Full strategy doc (positioning, ICP, GigWise.ai expansion, 500K list plan)
+│   ├── seo-strategy.md       SEO program — page architecture, keywords, execution
+│   ├── aeo-strategy.md       AEO / AI-search optimization (ChatGPT, Claude, Perplexity, Gemini, Grok)
+│   └── claude-code-prompt.md Executable prompt that ships SEO + AEO in one pass
 ├── package.json        Declares Resend dep (Vercel auto-installs on deploy)
 ├── vercel.json         Static + functions config (cleanUrls, security headers)
 ├── .env.example        Documented environment variables
