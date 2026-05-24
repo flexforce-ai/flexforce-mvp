@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlexForce.ai + GigWise.ai — The Audience Layer for the Deskless Workforce</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0c10;
+    --surface: #111318;
+    --surface2: #181a20;
+    --surface3: #1f222a;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.14);
+    --accent: #e8ff5a;
+    --accent2: #5af0e8;
+    --accent3: #ff5a8a;
+    --accent4: #a05aff;
+    --accent5: #ff9a3c;
+    --text: #e0e0ee;
+    --muted: #60607a;
+    --dim:  #9090a8;
+    --white: #ffffff;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  a.ext { color: var(--accent2); border-bottom: 1px dotted rgba(90,240,232,0.4); }
+  a.ext:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* HEADER */
+  .hdr {
+    padding: 90px 60px 60px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(160deg, #0e1118 0%, #131020 100%);
+    position: relative; overflow: hidden;
+  }
+  .hdr::after {
+    content: '';
+    position: absolute; top: -300px; right: -200px;
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(232,255,90,0.05) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hdr::before {
+    content: '';
+    position: absolute; bottom: -200px; left: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(160,90,255,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hdr-eyebrow {
+    font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 22px;
+    position: relative; z-index: 1;
+  }
+  .hdr-eyebrow span { opacity: 0.4; margin: 0 10px; }
+  .hdr-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(38px, 6vw, 72px);
+    font-weight: 800; color: var(--white); line-height: 1.02;
+    max-width: 1100px;
+    position: relative; z-index: 1;
+  }
+  .hdr-title em { font-style: normal; color: var(--accent); }
+  .hdr-sub {
+    font-family: 'Fraunces', serif; font-weight: 300; font-style: italic;
+    font-size: 19px; color: #b8b8c8; margin-top: 22px; max-width: 820px;
+    line-height: 1.55;
+    position: relative; z-index: 1;
+  }
+  .verdict-bar {
+    margin-top: 40px;
+    padding: 22px 26px;
+    background: rgba(232,255,90,0.06);
+    border: 1px solid rgba(232,255,90,0.18);
+    border-left: 4px solid var(--accent);
+    max-width: 920px;
+    font-size: 13px;
+    color: #d4dcb0;
+    line-height: 1.85;
+    position: relative; z-index: 1;
+  }
+  .verdict-bar strong { color: var(--accent); font-weight: 600; }
+  .verdict-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px; opacity: 0.8;
+  }
+  .nameplate {
+    display: inline-flex; align-items: center; gap: 14px;
+    margin-top: 36px;
+    padding: 14px 22px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border2);
+    position: relative; z-index: 1;
+  }
+  .nameplate-dot { width: 10px; height: 10px; background: var(--accent); border-radius: 50%; }
+  .nameplate-text { font-size: 11px; color: var(--muted); letter-spacing: 0.08em; }
+  .nameplate-text strong { color: var(--white); letter-spacing: 0.15em; }
+
+  /* LAYOUT */
+  .wrap { max-width: 1380px; margin: 0 auto; padding: 0 60px; }
+
+  /* TOC */
+  .toc {
+    padding: 50px 0 30px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .toc-label {
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 22px;
+  }
+  .toc-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+    border-top: 1px solid var(--border);
+  }
+  .toc-item {
+    padding: 16px 18px;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    display: flex; gap: 10px;
+    transition: background 0.15s;
+    cursor: pointer;
+    color: var(--dim);
+  }
+  .toc-item:hover { background: var(--surface2); color: var(--white); }
+  .toc-num {
+    color: var(--accent); font-weight: 600; letter-spacing: 0.05em;
+    min-width: 26px;
+  }
+
+  /* SECTION */
+  .sec { padding: 80px 0 30px; border-top: 1px solid var(--border); }
+  .sec:first-of-type { border-top: none; }
+  .sec-label { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .sec-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 3.5vw, 40px);
+    font-weight: 700; color: var(--white); margin-bottom: 8px;
+    line-height: 1.1;
+  }
+  .sec-title em { font-style: normal; color: var(--accent); }
+  .sec-desc {
+    font-family: 'Fraunces', serif; font-style: italic; font-weight: 300;
+    font-size: 17px; color: var(--muted); margin-bottom: 44px; max-width: 820px; line-height: 1.55;
+  }
+
+  /* PROSE */
+  .prose p { margin-bottom: 18px; color: var(--text); max-width: 920px; font-size: 13px; line-height: 1.85; }
+  .prose p strong { color: var(--white); font-weight: 500; }
+  .prose p em { font-style: italic; color: var(--accent2); font-family: 'Fraunces', serif; }
+  .prose ul { max-width: 920px; margin-bottom: 18px; padding-left: 20px; }
+  .prose ul li { color: var(--text); margin-bottom: 8px; }
+  .prose ul li::marker { color: var(--accent); }
+
+  /* CALLOUTS */
+  .callout {
+    margin: 28px 0;
+    padding: 20px 24px;
+    background: rgba(90,240,232,0.04);
+    border-left: 3px solid var(--accent2);
+    max-width: 920px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: #b8d8d2;
+  }
+  .callout strong { color: var(--accent2); }
+  .callout-warn {
+    background: rgba(255,90,138,0.04);
+    border-left-color: var(--accent3);
+    color: #d8b8c0;
+  }
+  .callout-warn strong { color: var(--accent3); }
+  .callout-bet {
+    background: rgba(232,255,90,0.05);
+    border-left-color: var(--accent);
+    color: #d8e0b0;
+  }
+  .callout-bet strong { color: var(--accent); }
+  .callout-moat {
+    background: rgba(160,90,255,0.05);
+    border-left-color: var(--accent4);
+    color: #c8b8d8;
+  }
+  .callout-moat strong { color: var(--accent4); }
+
+  /* FACT GRID */
+  .fact-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px;
+    background: var(--border); margin: 28px 0;
+  }
+  .fact {
+    background: var(--surface); padding: 22px;
+  }
+  .fact-num {
+    font-family: 'Syne', sans-serif; font-size: 30px; font-weight: 700;
+    color: var(--accent); line-height: 1; margin-bottom: 10px;
+  }
+  .fact-label {
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 12px;
+  }
+  .fact-text { font-size: 12px; color: var(--text); line-height: 1.7; }
+
+  /* TABLES */
+  table.dat {
+    width: 100%; max-width: 1100px; margin: 28px 0;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  table.dat th {
+    text-align: left; padding: 12px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); font-weight: 500;
+    border-bottom: 1px solid var(--border2);
+    background: var(--surface);
+  }
+  table.dat td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text); vertical-align: top;
+  }
+  table.dat td strong { color: var(--white); }
+  table.dat tr:hover td { background: var(--surface2); }
+
+  /* TWO COLUMN COMPARE */
+  .two-col {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    background: var(--border); margin: 28px 0; max-width: 1100px;
+  }
+  .two-col > div { background: var(--surface); padding: 28px; }
+  .two-col-label {
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    margin-bottom: 14px; font-weight: 600;
+  }
+  .two-col-label.bad { color: var(--accent3); }
+  .two-col-label.good { color: var(--accent); }
+  .two-col p { font-size: 12px; color: var(--text); line-height: 1.75; }
+
+  /* PILL */
+  .pill {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(232,255,90,0.08);
+    border: 1px solid rgba(232,255,90,0.2);
+    color: var(--accent);
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    margin-right: 6px;
+  }
+  .pill.cyan { background: rgba(90,240,232,0.08); border-color: rgba(90,240,232,0.2); color: var(--accent2); }
+  .pill.purple { background: rgba(160,90,255,0.08); border-color: rgba(160,90,255,0.2); color: var(--accent4); }
+  .pill.pink { background: rgba(255,90,138,0.08); border-color: rgba(255,90,138,0.2); color: var(--accent3); }
+
+  /* MILESTONE TRACK */
+  .track {
+    display: grid; grid-template-columns: repeat(6, 1fr); gap: 2px;
+    background: var(--border); margin: 28px 0; max-width: 1100px;
+  }
+  .track-step { background: var(--surface); padding: 22px 18px; }
+  .track-week {
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+  }
+  .track-title { font-size: 12px; color: var(--white); font-weight: 500; margin-bottom: 8px; }
+  .track-detail { font-size: 11px; color: var(--dim); line-height: 1.6; }
+
+  /* SUBHEAD */
+  .subhead {
+    font-family: 'Syne', sans-serif; font-weight: 600;
+    font-size: 19px; color: var(--white);
+    margin: 36px 0 14px; max-width: 920px;
+  }
+  .subhead em { font-style: normal; color: var(--accent); }
+
+  /* NUMBERED LIST */
+  .nlist { max-width: 920px; margin: 18px 0; counter-reset: nlist; }
+  .nlist > li {
+    list-style: none; margin-bottom: 18px; padding-left: 44px; position: relative;
+    counter-increment: nlist;
+  }
+  .nlist > li::before {
+    content: counter(nlist, decimal-leading-zero);
+    position: absolute; left: 0; top: 2px;
+    font-family: 'DM Mono', monospace; font-weight: 500;
+    color: var(--accent); font-size: 11px; letter-spacing: 0.1em;
+  }
+
+  /* MONEY BLOCK */
+  .money-block {
+    margin: 28px 0; max-width: 1100px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+  }
+  .money-row {
+    display: grid; grid-template-columns: 240px 1fr 140px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    align-items: center;
+  }
+  .money-row:last-child { border-bottom: none; }
+  .money-row .cat { color: var(--accent); letter-spacing: 0.08em; font-size: 11px; text-transform: uppercase; }
+  .money-row .desc { color: var(--text); padding: 0 18px; line-height: 1.7; }
+  .money-row .amt { color: var(--white); text-align: right; font-weight: 500; }
+  .money-row.tot {
+    background: rgba(232,255,90,0.05);
+    border-top: 1px solid var(--accent);
+    border-bottom: none;
+  }
+  .money-row.tot .cat { color: var(--accent); font-weight: 600; }
+  .money-row.tot .amt { color: var(--accent); font-size: 14px; }
+  .money-row.section-head {
+    background: var(--surface2);
+    border-top: 1px solid var(--border2);
+  }
+  .money-row.section-head .cat { color: var(--accent2); font-size: 11px; font-weight: 600; }
+
+  /* DIAGRAM */
+  .flow {
+    margin: 36px 0; max-width: 1100px;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 28px;
+  }
+  .flow-row {
+    display: grid; grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 14px; align-items: center; margin-bottom: 18px;
+  }
+  .flow-row:last-child { margin-bottom: 0; }
+  .flow-node {
+    padding: 14px;
+    border: 1px solid var(--border2);
+    background: var(--surface2);
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .flow-node .lab {
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px;
+  }
+  .flow-arrow { color: var(--muted); font-size: 14px; text-align: center; }
+
+  /* FOOTER */
+  .ft {
+    border-top: 1px solid var(--border);
+    padding: 50px 60px;
+    font-size: 11px; color: var(--muted);
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .hdr { padding: 50px 24px 40px; }
+    .wrap { padding: 0 24px; }
+    .toc-grid { grid-template-columns: repeat(2, 1fr); }
+    .fact-grid { grid-template-columns: 1fr 1fr; }
+    .track { grid-template-columns: 1fr 1fr; }
+    .money-row { grid-template-columns: 1fr; gap: 4px; }
+    .money-row .desc { padding: 0; }
+    .money-row .amt { text-align: left; }
+    .two-col { grid-template-columns: 1fr; }
+    .flow-row { grid-template-columns: 1fr; }
+    .flow-arrow { transform: rotate(90deg); margin: 4px 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-eyebrow">FlexForce.ai <span>×</span> GigWise.ai <span>·</span> Wedge-then-Audience-Layer <span>·</span> 2026-05-23</div>
+  <h1 class="hdr-title">The audience layer for the <em>deskless workforce</em>.</h1>
+  <p class="hdr-sub">AI just collapsed entry-level white-collar hiring. The trades are short two-million workers by 2030. Every operator of frontline labor is now making AI-drafted decisions — job posts, comp letters, training scripts, RIF comms — and shipping them without ever asking whether the actual workers will respond. That gap is a category. Here is how a solo founder gets there first.</p>
+  <div class="verdict-bar">
+    <div class="verdict-label">The Bet</div>
+    <strong>FlexForce.ai</strong> is the wedge — an AI Hiring Manager that replaces the recruiter the SMB contractor never had. <strong>GigWise.ai</strong> is the bigger play sitting behind it — a Litmus-shaped audience-validation layer for any AI-drafted workforce decision, calibrated by the real frontline data FlexForce produces. Two products, one flywheel, one person can build it.
+  </div>
+  <div class="nameplate">
+    <div class="nameplate-dot"></div>
+    <div class="nameplate-text"><strong>FLEXFORCE.AI</strong> &nbsp; · &nbsp; <strong>GIGWISE.AI</strong> &nbsp; · &nbsp; PREPARED FOR JAGDISH</div>
+  </div>
+</div>
+
+<div class="toc">
+  <div class="wrap">
+    <div class="toc-label">Contents</div>
+    <div class="toc-grid">
+      <a href="#sec1" class="toc-item"><span class="toc-num">01</span><span>The shift, in five facts</span></a>
+      <a href="#sec2" class="toc-item"><span class="toc-num">02</span><span>The problem, sharply</span></a>
+      <a href="#sec3" class="toc-item"><span class="toc-num">03</span><span>Competitive map &amp; white space</span></a>
+      <a href="#sec4" class="toc-item"><span class="toc-num">04</span><span>The wedge — FlexForce.ai</span></a>
+      <a href="#sec5" class="toc-item"><span class="toc-num">05</span><span>Solo-founder launch playbook</span></a>
+      <a href="#sec6" class="toc-item"><span class="toc-num">06</span><span>The capital plan — 100 customers in 90 days</span></a>
+      <a href="#sec7" class="toc-item"><span class="toc-num">07</span><span>GigWise.ai reimagined</span></a>
+      <a href="#sec8" class="toc-item"><span class="toc-num">08</span><span>Why not a marketplace</span></a>
+      <a href="#sec9" class="toc-item"><span class="toc-num">09</span><span>The two-product flywheel</span></a>
+      <a href="#sec10" class="toc-item"><span class="toc-num">10</span><span>MVP &amp; tech stack</span></a>
+      <a href="#sec11" class="toc-item"><span class="toc-num">11</span><span>Alternates rejected</span></a>
+      <a href="#sec12" class="toc-item"><span class="toc-num">12</span><span>Pressure test &amp; risks</span></a>
+      <a href="#sec13" class="toc-item"><span class="toc-num">13</span><span>Why now · 3–5 year horizon</span></a>
+      <a href="#sec14" class="toc-item"><span class="toc-num">14</span><span>First 14 days</span></a>
+      <a href="#sec15" class="toc-item"><span class="toc-num">15</span><span>Sources</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<section id="sec1" class="sec">
+  <div class="sec-label">01 — Signal</div>
+  <h2 class="sec-title">The shift, <em>in five facts.</em></h2>
+  <p class="sec-desc">The CNBC and LinkedIn headlines are the surface. Underneath sits a structural break in the US labor market that creates a once-a-decade product opening.</p>
+
+  <div class="fact-grid">
+    <div class="fact">
+      <div class="fact-label">$1 Trillion gap</div>
+      <div class="fact-num">2.1M</div>
+      <div class="fact-text">Skilled-trade jobs projected unfilled by 2030 (JLL × US Dept of Education). Annual economic loss: ~$1T.</div>
+    </div>
+    <div class="fact">
+      <div class="fact-label">Retirement cliff</div>
+      <div class="fact-num">39%</div>
+      <div class="fact-text">Of US facilities managers are 55+. The youngest Boomers turn 68 by 2032 — the labor force loses 5.9M workers by then.</div>
+    </div>
+    <div class="fact">
+      <div class="fact-label">Wrong AI</div>
+      <div class="fact-num">12%</div>
+      <div class="fact-text">Projected unemployment in info/finance/professional services by 2032 in Indeed's replacement scenario. AI hits where workers are abundant.</div>
+    </div>
+    <div class="fact">
+      <div class="fact-label">Broken funnel</div>
+      <div class="fact-num">60–80%</div>
+      <div class="fact-text">Of inbound applicant calls to SMB contractors go unreturned. The supply exists. The matching infrastructure does not.</div>
+    </div>
+    <div class="fact">
+      <div class="fact-label">Money doesn't work</div>
+      <div class="fact-num">68%</div>
+      <div class="fact-text">Annual turnover in skilled trades — even after wage increases. The unsolved problems are clarity, scheduling, and back-office friction.</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>Indeed Hiring Lab's deeper finding is the operative one — and it gets quoted less than it should: <em>"The defining labor market challenge ahead is labor reallocation, not creation. Upskilling, credential reform, and better employee-job matching will be the primary levers."</em></p>
+    <p>That sentence is the entire opportunity. The problem is not a shortage of labor or of jobs. It is a shortage of <strong>pathways</strong> — the AI-mediated infrastructure that connects the two. The first product that owns those pathways for any meaningful workforce slice owns the dataset behind every downstream workforce decision.</p>
+  </div>
+
+  <div class="callout callout-bet">
+    <strong>Why this matters for product shape:</strong> The wedge is not a job board. It is the operator software that runs the entire applicant flow for the people who can't afford a recruiter, can't keep up with applicants, and can't onboard fast enough — and which, by doing so, accrues the only proprietary calibration data in the category.
+  </div>
+</section>
+
+<section id="sec2" class="sec">
+  <div class="sec-label">02 — Problem</div>
+  <h2 class="sec-title">The problem, <em>sharply.</em></h2>
+  <p class="sec-desc">Three pains, one customer. Each pain alone supports a product. The three together support a category.</p>
+
+  <div class="prose">
+    <p><strong>Pain 1 — The missed-applicant haemorrhage.</strong> The owner of a 12-person HVAC shop in Austin gets seven applications in two days from her Indeed post. By the time she sees them on Friday night, four have already accepted offers elsewhere. The remaining three are unreachable. She posts again Monday. The cycle repeats every quarter. Industry-wide, 60–80% of inbound applicant calls go unreturned past four hours. Every applicant lost costs $25–50k in downstream training and lost productivity.</p>
+
+    <p><strong>Pain 2 — The Spanish-speaker filter.</strong> The single largest available supply pool — foreign-born or non-English-fluent skilled workers — is systematically rejected by US ATS systems trained on English résumé conventions. A 20-year electrician certified in Nicaragua starts the application worse than a novice. The owner doesn't know they're filtering out their best supply.</p>
+
+    <p><strong>Pain 3 — Decisions shipped untested.</strong> The same owner just rewrote her job post with ChatGPT. She'll roll out a new shift policy next month. She'll send a comp-update email in Q3. Every one of those is now AI-drafted — and shipped without ever asking what the workers will think. There is no "spell-check" for workforce communication. There is no <em>Litmus moment</em> for HR decisions.</p>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="two-col-label bad">The world today</div>
+      <p><strong>Frontline workforce decisions ship on instinct.</strong> Job posts, comp letters, RIF announcements, shift changes, training programs — all increasingly AI-drafted, none validated against any audience model. Operators learn what worked by watching retention and apply rates a quarter later, when it's too late to fix.</p>
+    </div>
+    <div>
+      <div class="two-col-label good">The world we build</div>
+      <p><strong>Every workforce decision audience-tested in 60 seconds.</strong> A draft job post returns a predicted apply rate, the top three concerns a Texas HVAC tech persona would raise, and a rewrite that lifts predicted retention by 14%. Calibrated by real-world outcome data. Compounding. Inevitable.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sec3" class="sec">
+  <div class="sec-label">03 — Landscape</div>
+  <h2 class="sec-title">Competitive map, <em>and the white space.</em></h2>
+  <p class="sec-desc">Three crowded tiers. One unowned middle. The opening is precise.</p>
+
+  <table class="dat">
+    <thead>
+      <tr>
+        <th style="width:18%">Tier</th>
+        <th style="width:28%">Who</th>
+        <th style="width:28%">What they do</th>
+        <th style="width:26%">The gap</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Enterprise staffing AI</strong></td>
+        <td>VeroSkills ($15M ARR · $5.3M raise), The Blue Collar Recruiter, Joveo, HeyMilo</td>
+        <td>AI screening sold to mid-market &amp; enterprise (50+ FTE). Big-customer GTM.</td>
+        <td>The 600k US home-service SMBs (1–30 techs) are too small for enterprise sales motion and too painful to support.</td>
+      </tr>
+      <tr>
+        <td><strong>Field-service SaaS</strong></td>
+        <td>ServiceTitan ($30–48k/yr), Housecall Pro ($65–450/mo), Jobber ($49–349/mo), FieldPulse</td>
+        <td>Dispatch, estimating, invoicing, customer comms. Recruiting bolt-on at best.</td>
+        <td>Hiring is feature #14 in their roadmap. They will integrate <em>with</em> a hiring product faster than they will build one.</td>
+      </tr>
+      <tr>
+        <td><strong>Voice-AI inbound</strong></td>
+        <td>LeadTruffle, AgentVoice, Synthflow, MyAIFrontDesk</td>
+        <td>Answer the phone for customer booking.</td>
+        <td>Focused on <strong>customer</strong> calls, not <strong>applicant</strong> calls. No one operates the recruiting flow end-to-end.</td>
+      </tr>
+      <tr>
+        <td><strong>Gig marketplaces (blue)</strong></td>
+        <td>Instawork, BlueCrew, Wonolo, Workrise</td>
+        <td>Light-industrial &amp; warehouse on-demand staffing.</td>
+        <td>None address licensed trades. Compliance + license verification is the wall they can't cross.</td>
+      </tr>
+      <tr>
+        <td><strong>Workforce sentiment / engagement</strong></td>
+        <td>Glint, Lattice, Culture Amp, WorkBuzz</td>
+        <td>Annual / pulse surveys for desk workers in 200+ HRIS-integrated companies.</td>
+        <td>Built for desks &amp; HRIS. Useless for 60M+ frontline workers with no email. Audience-validation pre-launch doesn't exist.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-moat">
+    <strong>The unowned middle:</strong> An AI hiring + onboarding operator for small home-service contractors (3–30 employees) — and, behind it, an audience-validation layer for any AI-drafted workforce decision targeting frontline labor. The first is the wedge. The second is the category-defining play that the first product's data makes possible.
+  </div>
+</section>
+
+<section id="sec4" class="sec">
+  <div class="sec-label">04 — The Wedge</div>
+  <h2 class="sec-title"><em>FlexForce.ai</em> — the AI Hiring Manager.</h2>
+  <p class="sec-desc">Reply to every applicant in 60 seconds. Hire your next tech in 5 days. One product, one buyer, one job to be done.</p>
+
+  <p class="subhead">ICP <em>— one sentence, sharp</em></p>
+  <div class="prose">
+    <p>Owner-operator or general manager of a US licensed home-service business with <strong>3–30 field employees</strong> — HVAC, plumbing, electrical, roofing, garage door, landscaping, cleaning — who is the one doing the recruiting at night and losing techs to ghosting.</p>
+  </div>
+
+  <p class="subhead">What it does, <em>in one paragraph</em></p>
+  <div class="prose">
+    <p>A branded application page (<code>apply.flexforce.ai/{shop}</code>) plus a dedicated phone number become the only places candidates go. An AI voice and SMS agent answers in 60 seconds, runs a trade-specific structured screen in English or Spanish (calibrated by trade and state), pings the license-board and background-check APIs, books the in-person interview on the owner's calendar, and pushes the hired candidate's record into ServiceTitan, Jobber, or Housecall Pro. The owner sees one daily digest: <em>"3 screened, 2 ready to interview, 1 ready to offer."</em></p>
+  </div>
+
+  <p class="subhead">Why this beats everything adjacent</p>
+  <table class="dat">
+    <thead>
+      <tr><th>Versus</th><th>Why FlexForce wins</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>VeroSkills</strong></td><td>Sells to enterprise. Sales cycle and integration overhead don't fit a 7-person plumbing shop. FlexForce is self-serve, $299/mo, live in 30 minutes.</td></tr>
+      <tr><td><strong>ServiceTitan recruiting</strong></td><td>Charges $30k+/year and hiring is feature #14. FlexForce is hiring-first, integrates <em>into</em> ServiceTitan, doesn't replace it.</td></tr>
+      <tr><td><strong>Indeed / ZipRecruiter</strong></td><td>Posting sites, not operators. FlexForce converts the applicants Indeed sends you.</td></tr>
+      <tr><td><strong>Hiring an HR person</strong></td><td>$60–80k/year. FlexForce is $3.6k/year, never sleeps, fluent in Spanish, never calls in sick.</td></tr>
+    </tbody>
+  </table>
+
+  <p class="subhead">Pricing</p>
+  <table class="dat">
+    <thead><tr><th>Plan</th><th>Monthly</th><th>Includes</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Starter</strong></td><td>$299</td><td>1 location, up to 5 active roles, unlimited screening minutes, English + Spanish, daily digest</td></tr>
+      <tr><td><strong>Growth</strong></td><td>$599</td><td>Up to 3 locations, unlimited roles, ATS integrations (Jobber, Housecall Pro), automated reference checks</td></tr>
+      <tr><td><strong>Premium</strong></td><td>$999</td><td>ServiceTitan integration, retention dashboard (preview), priority support, dedicated number per location</td></tr>
+      <tr><td><strong>Success fee</strong> (optional)</td><td>$250/hire</td><td>For operators who prefer pay-per-outcome — increases ARPA on volume customers</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Unit economics target:</strong> Blended ARPA $5–7k ARR. Gross margin &gt;85% (voice + LLM costs ~10–15% of revenue). Payback &lt;2 months on paid acquisition. LTV at $200 CAC × 24-month retention = $4–6k contribution — viable at scale even with rising CAC.
+  </div>
+</section>
+
+<section id="sec5" class="sec">
+  <div class="sec-label">05 — The Playbook</div>
+  <h2 class="sec-title">Solo-founder launch <em>playbook.</em></h2>
+  <p class="sec-desc">No co-founder. No employees. No outside capital required to get to default-alive. The whole thing runs from one laptop and twelve SaaS subscriptions.</p>
+
+  <p class="subhead">The exact problem you are solving (so you can recite it in your sleep)</p>
+  <div class="callout callout-bet">
+    <strong>"You posted three HVAC tech jobs this month. You got 41 applicants. You called back 6. You hired 1 — and he ghosted on day three. You're not a recruiter. You're a plumber, an electrician, an HVAC owner trying to run a business. FlexForce calls every applicant within 60 seconds in their language, screens them on the questions a master tech would ask, verifies their license, books your interview, and emails you a one-page brief on each one. You hire faster, lose fewer to ghosting, and never miss the Spanish-speaking 15-year veteran with no résumé. $299 a month. Live tomorrow."</strong>
+  </div>
+
+  <p class="subhead">The wedge motion — five things in this exact order</p>
+  <ol class="nlist">
+    <li><strong>Pick one trade, one state.</strong> HVAC in Texas. Highest urgent-hire volume (87k+ active national postings), no state income tax for the founder, the Texas Department of Licensing and Regulation has a clean searchable license database, and ~10,000 licensed shops in the 3–30 employee band. Don't go national until you own this slice.</li>
+    <li><strong>Build the screening question bank by stealing from masters.</strong> Pay three master HVAC techs $500 each to spend 90 minutes answering: <em>"What ten questions would you ask in the first 15 minutes to tell whether someone can actually do this job?"</em> That recording is your trade-specific moat. Compete on this depth, not on UI.</li>
+    <li><strong>Ship v0.5 to ten design partners at $99/mo for 60 days.</strong> Don't free-tier. Charge real money to validate willingness-to-pay. Pick partners with a mix of trade focus, geography (urban + rural), and ownership type (founder-led + GM-led).</li>
+    <li><strong>Win the workflow before the integration.</strong> Don't waste week one on ServiceTitan integrations. Win the standalone product first. Integrations are pulled by paying customers, not pushed by hopeful founders.</li>
+    <li><strong>Replace yourself with AI ops.</strong> Build the customer-onboarding flow, the screening calibration loop, the support triage, and the cold-outbound personalization as <em>your own internal AI workflows</em> from day one. You are the COO of an AI-staffed company. Treat it that way.</li>
+  </ol>
+
+  <p class="subhead">Distribution channels, <em>ranked by leverage for a solo operator</em></p>
+  <table class="dat">
+    <thead><tr><th>Channel</th><th>How it works</th><th>CAC est.</th><th>Effort</th></tr></thead>
+    <tbody>
+      <tr><td><strong>AI-personalized cold outbound</strong></td><td>Scrape TDLR licensed contractor list → enrich w/ Apollo → segment by employee count → AI personalizes off their actual Indeed/ZipRecruiter posting age (real signal of pain)</td><td>$60–120</td><td>Medium · scalable</td></tr>
+      <tr><td><strong>Google Ads on bottom-funnel terms</strong></td><td>Bid on "how to hire HVAC technician", "HVAC recruiter software", "ATS for contractors"</td><td>$180–250</td><td>Low · capital-bound</td></tr>
+      <tr><td><strong>SEO programmatic — "[trade] hiring [state]"</strong></td><td>50 states × 5 trades = 250 high-intent landing pages, AI-drafted, owner-reviewed</td><td>$30–60</td><td>High upfront · compounds</td></tr>
+      <tr><td><strong>FSM marketplace listings</strong></td><td>Jobber + Housecall Pro + ServiceTitan app stores. Free distribution to 100k+ contractor users.</td><td>$0–40</td><td>Low · 6-week approval cycle</td></tr>
+      <tr><td><strong>Trade-association affiliate</strong></td><td>20% lifetime revenue share to local PHCC, ABC, ACCA chapters</td><td>$80–150</td><td>Medium · slow ramp</td></tr>
+      <tr><td><strong>Founder-led YouTube</strong></td><td>"How I hired 8 HVAC techs in 30 days with AI" series. SEO + trust compound.</td><td>$10–30 long-run</td><td>High · long-tail</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Channel mix to hit 100 customers in 90 days:</strong> ~40 from cold outbound, ~30 from Google Ads, ~15 from FSM marketplace listings + affiliates, ~15 from organic / founder content. Blended CAC ~$160. Total acquisition spend over 90 days: ~$16k (see capital plan).
+  </div>
+</section>
+
+<section id="sec6" class="sec">
+  <div class="sec-label">06 — Capital Plan</div>
+  <h2 class="sec-title">The money — <em>100 paying customers in 90 days.</em></h2>
+  <p class="sec-desc">Honest numbers. Conservative on revenue, realistic on cost. Excludes founder salary; assumes 90 hours/week from the founder. Includes one freelance bug-fixer at month two.</p>
+
+  <div class="money-block">
+    <div class="money-row section-head">
+      <div class="cat">Build &amp; Infrastructure</div>
+      <div class="desc">One-time + monthly recurring · Month 0–1</div>
+      <div class="amt">90-day cost</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Voice AI (Vapi / Bland)</div>
+      <div class="desc">Bilingual voice agent platform. ~$0.07/min × ~30k minutes over 90 days = ~$2,100. Includes free trial credits month one.</div>
+      <div class="amt">$2,100</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Twilio phone + SMS</div>
+      <div class="desc">15 dedicated numbers (one per customer at scale) + SMS at ~$0.0075. Estimate ~80k SMS + voice minutes.</div>
+      <div class="amt">$900</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">LLM API (Claude + GPT)</div>
+      <div class="desc">Screening logic, summary generation, daily digests. Estimate ~80M tokens.</div>
+      <div class="amt">$1,200</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Background &amp; license verification</div>
+      <div class="desc">Checkr ($25–55/check, pay-as-you-go) — estimate 200 checks across pilots; TDLR scraping is free.</div>
+      <div class="amt">$1,200</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Stack — Supabase, Vercel, Stripe, Cal.com, Resend</div>
+      <div class="desc">Hosting, DB, auth, billing, scheduling, transactional email. All on cheap tiers initially.</div>
+      <div class="amt">$450</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Domains, brand, design system</div>
+      <div class="desc">.ai domain renewals (already owned), Framer Pro for landing pages, Figma + Linear, brand mark, favicon</div>
+      <div class="amt">$600</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Master-tech consulting</div>
+      <div class="desc">3× HVAC master techs × $500 each for question-bank capture. The single best money you'll spend.</div>
+      <div class="amt">$1,500</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Freelance bug-fixer (month 2–3)</div>
+      <div class="desc">~20 hrs/week × 8 weeks at $50/hr to free founder for sales while shipping integrations</div>
+      <div class="amt">$8,000</div>
+    </div>
+
+    <div class="money-row section-head">
+      <div class="cat">Go-To-Market</div>
+      <div class="desc">Outbound + paid + content</div>
+      <div class="amt"></div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Apollo + Clay (lead data)</div>
+      <div class="desc">Enrich Texas HVAC contractor list, segment, append signals. Month 1 burst + monthly retainer.</div>
+      <div class="amt">$1,200</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Smartlead / Instantly + 12 sending domains</div>
+      <div class="desc">Cold email infrastructure. 12 warmed inboxes × 30 emails/day = ~32k touches in 90 days at 1% reply = ~320 conversations.</div>
+      <div class="amt">$900</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Google Ads</div>
+      <div class="desc">Targeted bottom-funnel keywords in Texas only. $50/day × 60 days = $3k. Tight conversion-optimized landing pages.</div>
+      <div class="amt">$3,000</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Meta / TikTok creator seeding</div>
+      <div class="desc">Pay 5 trades influencers $400 each for one organic post — cheaper than ads in this audience.</div>
+      <div class="amt">$2,000</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">SEO + programmatic content</div>
+      <div class="desc">250 "[trade] hiring [state]" pages generated + reviewed. Editor at $40/hr × 40 hrs.</div>
+      <div class="amt">$1,600</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Affiliate kickback pool</div>
+      <div class="desc">Bounties for first 10 partner-driven signups: $200 each.</div>
+      <div class="amt">$2,000</div>
+    </div>
+
+    <div class="money-row section-head">
+      <div class="cat">Legal &amp; Ops</div>
+      <div class="desc">Don't skip these or you will regret it at $50k MRR</div>
+      <div class="amt"></div>
+    </div>
+    <div class="money-row">
+      <div class="cat">LLC formation + EIN + bank</div>
+      <div class="desc">Delaware C-corp via Stripe Atlas or Wyoming LLC for solo. ~$500 + state fees.</div>
+      <div class="amt">$800</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Terms of service, privacy, MSA template</div>
+      <div class="desc">Stripped-down lawyer review of templates. EEOC + AI-bias disclosures front-loaded.</div>
+      <div class="amt">$1,500</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">EEOC / AI-bias audit template</div>
+      <div class="desc">Self-conducted using NIST + EEOC published frameworks. Tooling for 4/5ths-rule reporting.</div>
+      <div class="amt">$500</div>
+    </div>
+    <div class="money-row">
+      <div class="cat">E&amp;O insurance (cyber + AI)</div>
+      <div class="desc">Vouch or similar. ~$200/mo from month 2.</div>
+      <div class="amt">$400</div>
+    </div>
+
+    <div class="money-row section-head">
+      <div class="cat">Reserves</div>
+      <div class="desc">Buffer for what you can't predict</div>
+      <div class="amt"></div>
+    </div>
+    <div class="money-row">
+      <div class="cat">Contingency (15%)</div>
+      <div class="desc">Bug-fix surge, voice-API overage on a viral week, customer refund pool</div>
+      <div class="amt">$4,200</div>
+    </div>
+
+    <div class="money-row tot">
+      <div class="cat">Total 90-day ops cost</div>
+      <div class="desc">Cash burn to reach 100 paying customers · excludes founder salary</div>
+      <div class="amt">$32,050</div>
+    </div>
+  </div>
+
+  <p class="subhead">If the founder also wants to pay themselves</p>
+  <div class="prose">
+    <p>Add <strong>$5–8k/month</strong> in founder draw for living expenses (geo-dependent). Total 3-month all-in: <strong>$47k–56k</strong>. Most one-person founders self-fund this from savings, a small angel cheque ($25–50k from one operator-friend angel), or an SBA microloan.</p>
+  </div>
+
+  <p class="subhead">What you get for $32k of operations</p>
+  <table class="dat">
+    <thead><tr><th>Month</th><th>Activity</th><th>Customers</th><th>MRR</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Month 1</strong></td>
+        <td>Ship v0.5 to 10 design partners at $99/mo. Start cold outbound + Google Ads. Build out marketplace listings.</td>
+        <td>10</td>
+        <td>$990</td>
+      </tr>
+      <tr>
+        <td><strong>Month 2</strong></td>
+        <td>Ship v1.0 (Jobber integration + Spanish flow polished). Raise price to $199. Marketplace approvals start landing.</td>
+        <td>40</td>
+        <td>$6,500</td>
+      </tr>
+      <tr>
+        <td><strong>Month 3</strong></td>
+        <td>Push price to $299 standard. Add Houscall Pro integration. Hit 100 customers, ~$22k MRR, $260k+ ARR run-rate.</td>
+        <td>100</td>
+        <td>$22,000</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-bet">
+    <strong>End-of-quarter state:</strong> 100 paying customers, $22k MRR (~$264k ARR), 85%+ gross margin, blended CAC of ~$160, payback under 2.5 months. Default-alive on operating cash flow at ~80 customers. Solo-founder unicorn-shape: viable through ~$1M ARR before you need a single hire beyond the freelance bug-fixer.
+  </div>
+</section>
+
+<section id="sec7" class="sec">
+  <div class="sec-label">07 — The Bigger Play</div>
+  <h2 class="sec-title"><em>GigWise.ai</em> — the audience layer for AI-driven workforce decisions.</h2>
+  <p class="sec-desc">Same shape as your Litmus thesis. Different surface. Bigger ceiling. The wedge product creates the calibration data; the platform monetizes the dataset.</p>
+
+  <p class="subhead">The reframe</p>
+  <div class="prose">
+    <p>The Litmus argument applied to creative AI was: every AI-generated artifact that will meet a real human currently ships without an audience reality-check. <strong>The exact same gap exists in workforce decisions</strong> — and the buyer pool is 10× larger, the regulatory pressure is faster-building, and there is no analog of Litmus yet attempting it.</p>
+    <p>Job posts. Comp letters. Shift-change announcements. RIF emails. Training scripts. Onboarding sequences. Benefit-change comms. Performance-review templates. Every one of these is increasingly AI-drafted in 2026 — and every one ships without ever asking what the actual frontline workers will think.</p>
+    <p><strong>GigWise.ai is the validation layer.</strong> Not a marketplace. Not a survey tool. A <em>Litmus-shaped</em> orchestration + calibration + dataset business — applied to the deskless workforce.</p>
+  </div>
+
+  <p class="subhead">What it does, <em>in one paragraph</em></p>
+  <div class="callout callout-moat">
+    A web app, a Slack add-on, and a Chrome extension. Paste your draft — a job post, a shift-change email, a comp-update letter, a training script. Pick a workforce persona (HVAC tech in TX, CNA in FL, warehouse worker in OH, retail associate in CA, immigrant tradesperson cohort). In sixty seconds get back: a <strong>predicted apply / engagement / retention impact score</strong>, the <strong>top three concerns that persona would raise</strong>, a <strong>rewrite that improves the prediction</strong>, an <strong>inclusivity-and-bias flag set</strong> (English fluency, foreign credentials, demographic exposure), and a <strong>compliance check</strong> against EEOC, state-specific labor law, and AI-decision disclosure rules. Every result logged for audit. Calibrated against real-world apply and retention outcomes piped in from FlexForce.ai.
+  </div>
+
+  <p class="subhead">Three business lines, all downstream of the workflow</p>
+  <table class="dat">
+    <thead><tr><th>Line</th><th>Shape</th><th>What it sells</th><th>Buyer</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>01 · The workflow tool</strong></td>
+        <td><span class="pill cyan">Plaid-like</span></td>
+        <td>Self-serve SaaS: $99 Solo · $399 Team · $1,299 Org. Validates and rewrites any HR/workforce comm.</td>
+        <td>HR managers, ops leaders, contractor owners, frontline-heavy operators</td>
+      </tr>
+      <tr>
+        <td><strong>02 · The certification standard</strong></td>
+        <td><span class="pill purple">Moody's-like</span></td>
+        <td>Public quarterly <em>"GigWise Workforce Accuracy Index"</em> — leaderboard of synthetic-twin vendors calibrated against ground truth. Vendors pay $40–120k/year to be certified.</td>
+        <td>Synthetic-twin vendors (the Vurvey/Simile/Thursday cohort applied to workforce); HRTech enterprises requiring procurement-grade validation</td>
+      </tr>
+      <tr>
+        <td><strong>03 · The proprietary dataset</strong></td>
+        <td><span class="pill pink">Nielsen-like</span></td>
+        <td>Licensed access to the <em>"Workforce Pulse Index"</em> — the only longitudinal dataset of (workforce decision draft → synthetic prediction → real-world outcome) triples, by trade, state, demographic.</td>
+        <td>HRTech (Indeed, ZipRecruiter, Workday), brand-side workforce analytics teams, industry analysts, state workforce boards</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="subhead">Why a solo founder can run this</p>
+  <div class="prose">
+    <ul>
+      <li><strong>No marketplace liquidity problem.</strong> One-sided product: paste in, get answer out. No supply side to develop.</li>
+      <li><strong>Synthetic-twin vendors are the only API integration</strong> — and there are fewer than 20 worth integrating. Three integrations cover 80% of the value at launch.</li>
+      <li><strong>The ground-truth calibration loop runs through FlexForce.ai</strong> — every real applicant decision and retention outcome from FlexForce becomes a validation signal for GigWise's synthetic predictions. <em>That's the moat no standalone player can reach.</em></li>
+      <li><strong>Distribution piggybacks on FlexForce.</strong> Every FlexForce customer is a warm GigWise prospect — and the upsell path inside the same daily digest workflow is trivial.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sec8" class="sec">
+  <div class="sec-label">08 — Why Not</div>
+  <h2 class="sec-title">Why <em>not</em> a marketplace.</h2>
+  <p class="sec-desc">The original GigWise framing was an on-demand skilled-trades marketplace. That instinct is correct on demand but wrong on shape. Here is why.</p>
+
+  <table class="dat">
+    <thead><tr><th>Why marketplaces fail for a solo founder</th><th>Why audience layer wins</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Two-sided liquidity</strong> — need workers and buyers simultaneously, in the same geography, at the same time. Cold-start problem is brutal.</td>
+        <td><strong>One-sided product</strong> — buyer pastes draft, gets answer. No supply side to develop.</td>
+      </tr>
+      <tr>
+        <td><strong>Compliance burden carried by the platform</strong> — license verification, insurance, W-9, workers' comp. Each state has different rules.</td>
+        <td><strong>No labor performed</strong> — GigWise predicts and rewrites; it does not deploy workers. No labor-law exposure.</td>
+      </tr>
+      <tr>
+        <td><strong>Margin compression toward 12–15%</strong> — Workrise, Instawork, BlueCrew all converge here. Brutal unit economics at sub-scale.</td>
+        <td><strong>SaaS gross margins 85%+</strong>, plus high-margin dataset licensing at scale.</td>
+      </tr>
+      <tr>
+        <td><strong>Capital-intensive</strong> — payroll float, supply incentives, geographic build-out. Solo founder cannot win this.</td>
+        <td><strong>Capital-light</strong> — every dollar goes to model + integrations + content, not float or supply subsidies.</td>
+      </tr>
+      <tr>
+        <td><strong>Existing well-funded competitors</strong> — Workrise ($300M+), Instawork ($200M+), Trade Hounds, Wonolo. Race-to-the-bottom on take rates.</td>
+        <td><strong>No incumbent</strong> in workforce-decision audience validation. First product to ship owns the category narrative.</td>
+      </tr>
+      <tr>
+        <td><strong>The data is transactional</strong> — "this job got filled" — and not particularly licensable.</td>
+        <td><strong>The data is predictive</strong> — "this language predicts 9% higher retention for foreign-credentialed HVAC techs in TX" — and licensable for years.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout callout-bet">
+    <strong>The strategic point:</strong> A marketplace would have been a five-year slog to $20M ARR with rising CAC, narrow margins, and a defensive moat. The audience-layer play is a five-year arc to <strong>three credible business lines</strong> — workflow SaaS, certification standard, proprietary dataset — sitting on the same engineering core, with compounding empirical moat. Same domain. Different shape. Much bigger ceiling.
+  </div>
+</section>
+
+<section id="sec9" class="sec">
+  <div class="sec-label">09 — Flywheel</div>
+  <h2 class="sec-title">The two-product <em>flywheel.</em></h2>
+  <p class="sec-desc">FlexForce.ai feeds GigWise.ai. GigWise.ai upgrades FlexForce.ai. Neither has to win alone. Together they form a category.</p>
+
+  <div class="flow">
+    <div class="flow-row">
+      <div class="flow-node">
+        <div class="lab">FlexForce.ai</div>
+        Operator-side AI hiring product. SMB contractors pay $299–999/mo. Generates real-world apply, screen, hire, retention events.
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="lab">Ground-truth layer</div>
+        Real workforce outcomes, by trade × state × demographic × language. The only proprietary signal source.
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="lab">GigWise.ai</div>
+        Calibrates synthetic-twin predictions against the ground-truth. Sells workflow validation + certification + dataset.
+      </div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-node">
+        <div class="lab">GigWise.ai output</div>
+        Audience-validated, rewrite-improved job posts and HR comms. Predicted apply / retention deltas.
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="lab">Becomes a FlexForce feature</div>
+        Inside FlexForce, every job post is now audience-pre-tested before it goes live. Conversion lifts measurably.
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">
+        <div class="lab">FlexForce ARPA rises</div>
+        Premium tier unlocks GigWise inside. Higher LTV. Higher pricing power. More retention data.
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>What this means in practice:</strong> Even though you launch FlexForce.ai first, you keep GigWise.ai's <em>data-collection schema</em> in mind from day one. Every applicant disposition, every retention event, every "why I left" reason becomes a training signal for the audience layer. You are building two products' moats with one product's GTM motion.
+  </div>
+</section>
+
+<section id="sec10" class="sec">
+  <div class="sec-label">10 — Stack</div>
+  <h2 class="sec-title">MVP &amp; tech <em>stack.</em></h2>
+  <p class="sec-desc">All off-the-shelf. ~$300/month infrastructure. One person can ship every piece.</p>
+
+  <table class="dat">
+    <thead><tr><th>Layer</th><th>Choice</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Voice AI</strong></td><td>Vapi (primary) + Bland.ai (failover)</td><td>Lowest-latency bilingual voice, trade-tuned, function-calling for license API hits inline</td></tr>
+      <tr><td><strong>SMS / phone</strong></td><td>Twilio</td><td>De facto. Native conversational threads + warm-up handling</td></tr>
+      <tr><td><strong>LLM</strong></td><td>Claude Sonnet (screening logic) + Haiku (digests)</td><td>Sonnet quality on structured screens; Haiku cost on volume summaries</td></tr>
+      <tr><td><strong>Scheduling</strong></td><td>Cal.com white-labeled</td><td>Open-source, customizable, no per-seat tax</td></tr>
+      <tr><td><strong>Background + license</strong></td><td>Checkr + state license-board APIs (TX TDLR first)</td><td>Real-time license validity check inside the screen call — the killer feature</td></tr>
+      <tr><td><strong>CRM / pipeline</strong></td><td>Supabase + Next.js dashboard</td><td>Solo founder doesn't need a CRM. Build the dashboard you'd want.</td></tr>
+      <tr><td><strong>Billing</strong></td><td>Stripe</td><td>Self-serve checkout + usage metering for success fees</td></tr>
+      <tr><td><strong>Job distribution</strong></td><td>Indeed + ZipRecruiter + Google Jobs XML feed</td><td>One feed, three channels. Don't be the source — be the operator.</td></tr>
+      <tr><td><strong>Integrations</strong></td><td>Jobber webhook v1 · Housecall Pro v1.1 · ServiceTitan v2</td><td>Sequence: easiest API → highest-revenue API → enterprise integration</td></tr>
+      <tr><td><strong>Frontend</strong></td><td>Next.js + Tailwind + Framer Motion · Vercel hosted</td><td>Ship in days, not weeks</td></tr>
+      <tr><td><strong>Observability</strong></td><td>Sentry + Vapi call recordings + LangSmith</td><td>You will need to audit every call to debug screening accuracy</td></tr>
+    </tbody>
+  </table>
+
+  <div class="track">
+    <div class="track-step"><div class="track-week">Week 1–2</div><div class="track-title">Brand &amp; apply page</div><div class="track-detail">flexforce.ai · branded apply page builder · Twilio numbers · Supabase schema</div></div>
+    <div class="track-step"><div class="track-week">Week 3–4</div><div class="track-title">Voice agent v1</div><div class="track-detail">Vapi flow + Spanish flow + HVAC question bank · live test on yourself</div></div>
+    <div class="track-step"><div class="track-week">Week 5–6</div><div class="track-title">SMS + license check</div><div class="track-detail">SMS auto-reply + scheduling · TX TDLR integration · Checkr live</div></div>
+    <div class="track-step"><div class="track-week">Week 7–8</div><div class="track-title">Owner dashboard</div><div class="track-detail">Daily digest · candidate brief PDF · Stripe checkout · onboarding flow</div></div>
+    <div class="track-step"><div class="track-week">Week 9</div><div class="track-title">10 design partners live</div><div class="track-detail">$99/mo pilot pricing · daily user interviews · screen-call audits</div></div>
+    <div class="track-step"><div class="track-week">Week 10–12</div><div class="track-title">Jobber integration + launch</div><div class="track-detail">Jobber app marketplace listing · ProductHunt · raise price to $299 · 100 customers</div></div>
+  </div>
+</section>
+
+<section id="sec11" class="sec">
+  <div class="sec-label">11 — Considered &amp; Rejected</div>
+  <h2 class="sec-title">Alternates <em>rejected</em> — and why.</h2>
+
+  <table class="dat">
+    <thead><tr><th>Idea</th><th>Why interesting</th><th>Why it loses</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>White-collar → trades reskilling coach</strong></td>
+        <td>Big narrative; matches the article themes; emotional pull</td>
+        <td>Low willingness-to-pay from candidates; long sales cycle to apprenticeships; no clear B2B buyer for solo-founder GTM</td>
+      </tr>
+      <tr>
+        <td><strong>Foreign-credential bridge platform</strong></td>
+        <td>Real systemic need; differentiated</td>
+        <td>Head-on with VeroSkills; immigrant ICP harder to reach for a solo operator with English-only outbound</td>
+      </tr>
+      <tr>
+        <td><strong>Standalone AI retention co-pilot</strong></td>
+        <td>Strong differentiator vs everyone</td>
+        <td>Outcome too lagging — owners won't pay $99/tech/mo for retention prediction unless they already trust you. <em>Perfect expansion product for FlexForce.</em> Not a standalone wedge.</td>
+      </tr>
+      <tr>
+        <td><strong>AI dispatch / estimating for SMB contractors</strong></td>
+        <td>Big margin lift for shops</td>
+        <td>Direct collision with ServiceTitan + Jobber roadmaps. They will outbuild a solo founder on this.</td>
+      </tr>
+      <tr>
+        <td><strong>Trades training / micro-credential AI tutor</strong></td>
+        <td>Aligned with reallocation thesis</td>
+        <td>Education businesses have brutal unit economics for solo founders. Long sales cycles, low willingness to pay from learners, friction with apprenticeship boards.</td>
+      </tr>
+      <tr>
+        <td><strong>GigWise as on-demand marketplace</strong></td>
+        <td>Real demand signal in facilities management</td>
+        <td>See Section 08 — wrong shape for a solo founder; well-funded incumbents; brutal unit economics. The audience-layer reframe is the better expression of the same insight.</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="sec12" class="sec">
+  <div class="sec-label">12 — Risks</div>
+  <h2 class="sec-title">Pressure test — <em>what kills this.</em></h2>
+
+  <div class="prose">
+    <p><strong>Risk 1: VeroSkills moves down-market.</strong> Mitigation — vertical depth wins. VeroSkills has a generalist screening AI; FlexForce has trade-specific question banks calibrated against retention data per state. At $1M ARR with a 3-trade × 10-state footprint, the data moat is structurally unreachable in their cost of acquisition.</p>
+
+    <p><strong>Risk 2: ServiceTitan or Jobber ships first-party AI recruiting.</strong> Mitigation — get on their marketplaces fast. FSM platforms favor partner-built apps that drive seat upgrades and don't cannibalize their own customer-comms revenue. Offer Jobber a white-label option by month 18.</p>
+
+    <p><strong>Risk 3: Voice AI commoditizes; OpenAI ships a "Hire Agent" template.</strong> Mitigation — the moat is not the voice model. It is: <em>(a)</em> workflow-deep integrations with FSM stacks, <em>(b)</em> per-state license-board plumbing, <em>(c)</em> trade-specific screening data calibrated to retention outcomes, <em>(d)</em> embedded distribution. None of that is a model-layer thing.</p>
+
+    <p><strong>Risk 4: EEOC / AI-bias regulation tightens around hiring AI.</strong> Mitigation — build NYC AEDT-style 4/5ths-rule audit reporting from day one. Default to "human-in-loop" on offers. Stay on the right side of California AB-2930 and the federal AI EO framework from launch. <em>This becomes a feature, not a liability.</em></p>
+
+    <p><strong>Risk 5: Macro hiring slowdown in trades.</strong> Mitigation — even at 30% lower volume, the demographic cliff is structural. Trades hiring is countercyclical to white-collar AI displacement. The product gets more important when hiring gets harder, not less.</p>
+
+    <p><strong>Risk 6: Tradespeople refuse AI screening.</strong> Mitigation — published 2025–26 data shows 83%+ candidate-positive rate on AI phone screens. Bilingual is a feature, not a bug. Keep calls under 5 minutes. Offer human-callback option visibly.</p>
+
+    <p><strong>Risk 7: GigWise.ai data flywheel never reaches escape velocity.</strong> Mitigation — even without FlexForce ground truth, GigWise.ai has standalone unit economics at the workflow-SaaS layer. The dataset is upside, not the floor. If the data network never compounds, the workflow product still pays for itself.</p>
+  </div>
+</section>
+
+<section id="sec13" class="sec">
+  <div class="sec-label">13 — Why Now</div>
+  <h2 class="sec-title">Why now — <em>3-to-5-year horizon.</em></h2>
+
+  <div class="prose">
+    <p><strong>2026.</strong> Voice-AI latency and naturalness crossed the threshold of "candidate doesn't realize" in late 2025. Trades hiring volume at all-time high. SMB contractor budgets for AI tooling normalize at $150–400/month. ATS systems still designed for white-collar hiring. The arbitrage window is open.</p>
+
+    <p><strong>2027.</strong> Frontline-workforce engagement becomes a board-level metric for retailers, logistics, healthcare, hospitality. Deskless-workforce tooling category emerges visibly. First state AI-decision-disclosure laws kick in. Compliance becomes a wedge as much as a tax.</p>
+
+    <p><strong>2028.</strong> Autonomous AI agents draft an increasing share of HR communications inside Workday / Rippling / Gusto. Audience-validation pre-launch becomes procurement-required for any AI-drafted comm above a certain reach threshold. <em>GigWise.ai's "Insights-Approved for Workforce" certification becomes the standard the agents check before shipping.</em></p>
+
+    <p><strong>2029–2030.</strong> The "Workforce Pulse Index" — synthetic prediction × real outcome — becomes a licensed dataset analogous to Nielsen ratings or Bloomberg fixed-income data. The 2.1M unfilled-trades-jobs forecast comes due; whoever has the matching infrastructure owns the reallocation. The category exists. The question becomes who owns the standard.</p>
+  </div>
+
+  <div class="callout callout-bet">
+    <strong>The 3–5 year picture:</strong> FlexForce.ai is a $20–50M ARR workflow business serving ~5–10k SMB contractors. GigWise.ai is the workforce-audience-layer category. Combined, the entity is a $100–250M revenue platform — and a credible $1B+ valuation outcome — run, plausibly, by a founder + 6–12 people, the rest of the work performed by AI. The deskless-workforce category is structurally unowned today. It will not be in three years.
+  </div>
+</section>
+
+<section id="sec14" class="sec">
+  <div class="sec-label">14 — Move</div>
+  <h2 class="sec-title">First 14 days.</h2>
+
+  <ol class="nlist">
+    <li><strong>Today.</strong> Buy a Twilio number. Start a Vapi trial. Open a Stripe account. Set up the LLC. Total cost: under $300, including the $99 LLC filing.</li>
+    <li><strong>Days 2–4.</strong> Cold-call 25 Texas HVAC owners. Don't sell. Diagnose. Record what they say about the last time they tried to hire someone. Capture quotes.</li>
+    <li><strong>Days 5–7.</strong> Mock up <code>apply.flexforce.ai</code> with one HVAC flow. Get Vapi to run a sample screen on you, in Spanish, before lunch on Day 6.</li>
+    <li><strong>Days 8–11.</strong> Find 3 design partners willing to pay $99 for a 30-day pilot. Pre-pay via Stripe. Conviction = cash.</li>
+    <li><strong>Days 12–14.</strong> Ship v0.5 — one trade, one state, one ATS integration target (Jobber webhook). Run live screens for the 3 design partners.</li>
+    <li><strong>Day 15.</strong> The design partners are either evangelists or they're not. If yes — raise to $299 and start the GTM machine in Section 06. If no — the diagnostic data tells you exactly what to fix. The cycle resets, $1.5k poorer and 10× smarter.</li>
+  </ol>
+</section>
+
+<section id="sec15" class="sec">
+  <div class="sec-label">15 — Sources</div>
+  <h2 class="sec-title">Sources &amp; signal.</h2>
+  <div class="prose">
+    <ul>
+      <li><a class="ext" href="https://www.cnbc.com/2026/05/19/ai-hiring-slowdown-skilled-trade-workers.html">CNBC — The AI economy is rewriting the American Dream</a></li>
+      <li><a class="ext" href="https://www.linkedin.com/news/story/ai-shifts-demand-from-college-grads-to-blue-collar-labor-8884018/">LinkedIn News — AI shifts demand from college grads to blue-collar labor</a></li>
+      <li><a class="ext" href="https://fortune.com/2026/04/21/america-silent-army-jll-report-skilled-trades-job-shortage-cost/">Fortune × JLL — America's 'silent army' $1T crisis</a></li>
+      <li><a class="ext" href="https://www.hiringlab.org/2026/05/14/how-a-shrinking-workforce-ai-and-labor-reallocation-will-define-the-next-15-years/">Indeed Hiring Lab — The Great Mismatch</a></li>
+      <li><a class="ext" href="https://news.crunchbase.com/workplace/ai-blue-collar-worker-placement-walsh-veroskills/">Crunchbase × VeroSkills — Blue-collar AI savior thesis</a></li>
+      <li><a class="ext" href="https://www.prnewswire.com/news-releases/veroskills-secures-funding-to-scale-ai-powered-staffing-platform-addressing-americas-1-trillion-blue-collar-labor-crisis-302598526.html">PR Newswire — VeroSkills $5.3M raise, $15M ARR</a></li>
+      <li><a class="ext" href="https://www.contractormag.com/management/best-practices/article/55366754/the-skilled-trades-labor-shortage-isnt-a-recruiting-problemits-a-clarity-problem">Contractor Magazine — It's a clarity problem, not a recruiting problem</a></li>
+      <li><a class="ext" href="https://www.classet.ai/blog/automated-phone-screening">Classet — Automated Phone Screening 2026</a></li>
+      <li><a class="ext" href="https://www.intervuebox.ai/ai-telephonic-interview-2026/">IntervueBox — AI Telephonic Interview 2026</a></li>
+      <li><a class="ext" href="https://www.leadduo.io/en/blog/fsm-software-pricing-comparison-servicetitan-jobber-housecall-pro">LeadDuo — FSM Software Pricing 2026</a></li>
+      <li><a class="ext" href="https://www.servicetitan.com/blog/ai-for-home-service">ServiceTitan — AI for Home Service 2026</a></li>
+      <li><a class="ext" href="https://thebluecollarrecruiter.com/how-to-retain-skilled-trades-workers-in-2026/">The Blue Collar Recruiter — Retention 2026</a></li>
+      <li><a class="ext" href="https://www.herohunt.ai/blog/ai-voice-agents-for-recruiting-2026-guide">HeroHunt — AI Voice Agents for Recruiting 2026</a></li>
+    </ul>
+  </div>
+</section>
+
+</div>
+
+<div class="ft">
+  Strategy doc · FlexForce.ai + GigWise.ai · Prepared for Jagdish · May 23, 2026 · Confidential
+</div>
+
+</body>
+</html>
