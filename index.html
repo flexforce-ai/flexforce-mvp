@@ -1085,10 +1085,14 @@
       <input type="text" id="state" name="state" required placeholder="TX">
 
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" required placeholder="mike@mikeshvac.com">
+      <input type="email" id="email" name="email" required placeholder="mike@mikeshvac.com"
+             pattern="^[A-Za-z0-9._%+\-]+@[A-Za-z0-9.\-]+\.[A-Za-z]{2,}$"
+             title="Enter a valid email address (e.g. mike@mikeshvac.com)">
 
       <label for="phone">Mobile phone</label>
-      <input type="tel" id="phone" name="phone" required placeholder="(512) 555-0142">
+      <input type="tel" id="phone" name="phone" required placeholder="(512) 555-0142"
+             pattern="^\+?[0-9\s\-\(\)\.]{10,20}$"
+             title="Enter a valid phone number — digits, with optional spaces, dashes, parentheses or leading +">
 
       <label for="pain">Biggest hiring headache right now (optional)</label>
       <textarea id="pain" name="pain" rows="3" placeholder="e.g., posted 3 ads this month, only got 2 callbacks"></textarea>
@@ -1098,10 +1102,10 @@
       </div>
 
       <button type="submit" id="submitBtn">Claim my free 30-day pilot →</button>
-      <div class="form-note">Founder-led onboarding · No spam · Cancel anytime</div>
+      <div class="form-note">Personal onboarding · No spam · Cancel anytime</div>
 
       <div class="success-msg" id="successMsg">
-        ✓ Got it. Jack will reach out within 4 hours to schedule your onboarding.
+        ✓ Got it. We'll reach out within 4 hours to schedule your onboarding.
       </div>
       <div class="error-msg" id="errorMsg" style="display:none; margin-top:14px; padding:14px; background:rgba(220,38,38,0.10); border:1px solid #dc2626; border-radius:8px; color:#fecaca; font-size:13px; text-align:center;"></div>
     </form>
@@ -1232,7 +1236,7 @@
       if (note) note.style.display = 'none';
       const tWrap = form.querySelector('.turnstile-wrap');
       if (tWrap) tWrap.style.display = 'none';
-      successMsg.innerHTML = '✓ Got it. Check your inbox — I just sent you a Cal.com link to book your 15-minute onboarding. — Jack';
+      successMsg.innerHTML = '✓ Got it. Check your inbox — we just sent you a Cal.com link to book your 15-minute onboarding.';
       successMsg.classList.add('show');
       setTimeout(() => successMsg.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
     } catch (err) {
