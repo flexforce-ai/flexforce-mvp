@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlexForce Admin</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root { --green: #1d4d3d; --lime: #bef264; --cream: #f6f3ee; --card: #fbf9f4; --border: #e0d9c8; --text: #0f2922; --mute: #5a6e64; --danger: #b91c1c; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: var(--cream); color: var(--text); }
+  nav { background: #0f2922; padding: 0 20px; height: 52px; display: flex; align-items: center; justify-content: space-between; }
+  nav .brand { color: #fff; font-weight: 500; }
+  nav .brand .dot { color: var(--lime); }
+  nav .right { display: flex; gap: 16px; align-items: center; }
+  nav .right a, nav .right button { color: rgba(255,255,255,.85); text-decoration: none; font-size: 14px; background: transparent; border: 0; cursor: pointer; }
+  nav .right a.active { color: var(--lime); }
+  .container { max-width: 1200px; margin: 0 auto; padding: 28px 20px 80px; }
+  h1 { font-weight: 500; font-size: 24px; margin-bottom: 14px; letter-spacing: -0.01em; }
+  h2 { font-weight: 500; font-size: 17px; margin-bottom: 8px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 18px; margin-bottom: 14px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; padding: 8px 10px; font-size: 12px; font-weight: 500; color: var(--mute); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid var(--border); }
+  td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  td.mono { font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+  td a { color: var(--green); text-decoration: none; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 500; }
+  .badge.active { background: var(--lime); color: var(--green); }
+  .badge.archived { background: #fef2f2; color: var(--danger); }
+  button.act { background: transparent; border: 1px solid var(--border); color: var(--text); padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+  button.act:hover { border-color: var(--green); color: var(--green); }
+  button.act.danger:hover { border-color: var(--danger); color: var(--danger); }
+  input { font-family: inherit; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; font-size: 14px; width: 100%; outline: none; }
+  input:focus { border-color: var(--green); }
+  .btn { background: var(--green); color: #fff; border: 0; padding: 11px 20px; border-radius: 8px; font-weight: 500; font-size: 14px; cursor: pointer; }
+  .btn:hover { background: #0f2922; }
+  .err { color: var(--danger); font-size: 13px; margin-top: 8px; }
+  .narrow { max-width: 420px; margin: 60px auto; }
+  .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .stat-num { font-family: 'JetBrains Mono', monospace; font-size: 22px; color: var(--green); }
+  .stat-label { font-size: 11px; color: var(--mute); text-transform: uppercase; letter-spacing: 0.05em; }
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">flexforce<span class="dot">.</span> · admin</span>
+  <div class="right" id="navRight"></div>
+</nav>
+<div class="container" id="app"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const root = $('app');
+
+async function api(path, opts = {}) {
+  const r = await fetch(path, {
+    method: opts.method || 'GET',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    body: opts.body ? JSON.stringify(opts.body) : undefined
+  });
+  const data = await r.json().catch(() => ({}));
+  return { ok: r.ok, status: r.status, data };
+}
+
+function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function setView(v) { const u = new URL(location); u.searchParams.set('view', v); history.pushState({}, '', u); render(); }
+
+async function checkAuth() {
+  // simple: try fetching shops, 401 means not authed
+  const r = await api('/api/admin/shops');
+  return r.ok;
+}
+
+function renderLogin(err) {
+  $('navRight').innerHTML = '';
+  root.innerHTML = `<div class="narrow">
+    <h1>Admin sign in</h1>
+    <div class="card">
+      <input id="pw" type="password" placeholder="Admin password" autofocus>
+      ${err ? `<div class="err">${esc(err)}</div>` : ''}
+      <button class="btn" id="go" style="margin-top:14px">Sign in</button>
+    </div>
+  </div>`;
+  $('go').addEventListener('click', login);
+  $('pw').addEventListener('keypress', e => { if (e.key === 'Enter') login(); });
+}
+async function login() {
+  const pw = $('pw').value;
+  const r = await api('/api/admin/login', { method: 'POST', body: { password: pw } });
+  if (r.ok) location.href = '/admin/?view=shops';
+  else renderLogin(r.data.error || 'Bad password.');
+}
+async function logout() { await api('/api/admin/logout', { method: 'POST' }); location.href = '/admin/'; }
+
+function navRender(active) {
+  $('navRight').innerHTML = `
+    <a class="${active==='shops'?'active':''}" href="/admin/?view=shops">Shops</a>
+    <a class="${active==='applicants'?'active':''}" href="/admin/?view=applicants">Applicants</a>
+    <a class="${active==='audit'?'active':''}" href="/admin/?view=audit">Audit</a>
+    <button onclick="logout()">Sign out</button>`;
+}
+
+async function renderShops() {
+  navRender('shops');
+  root.innerHTML = '<h1>All shops</h1><p>Loading…</p>';
+  const r = await api('/api/admin/shops');
+  if (!r.ok) return renderLogin(r.data.error);
+  const shops = r.data.shops || [];
+  const active = shops.filter(s => s.status === 'active');
+  const total = shops.length;
+  const totalApplicants = shops.reduce((sum, s) => sum + (s.applicantCount || 0), 0);
+  root.innerHTML = `
+    <h1>All shops</h1>
+    <div class="stat-grid">
+      <div class="stat"><div class="stat-num">${total}</div><div class="stat-label">Total shops</div></div>
+      <div class="stat"><div class="stat-num">${active.length}</div><div class="stat-label">Active</div></div>
+      <div class="stat"><div class="stat-num">${totalApplicants}</div><div class="stat-label">Total applicants</div></div>
+    </div>
+    <div class="card" style="padding:0">
+      <table>
+        <thead><tr><th>Slug</th><th>Shop</th><th>Owner</th><th>Trade / State</th><th>Applicants</th><th>Status</th><th>Created</th><th></th></tr></thead>
+        <tbody>
+        ${shops.map(s => `
+          <tr>
+            <td class="mono"><a href="/apply/${esc(s.slug)}" target="_blank">/apply/${esc(s.slug)}</a></td>
+            <td>${esc(s.shopName)}</td>
+            <td class="mono">${esc(s.ownerEmail || '')}</td>
+            <td>${esc(s.trade || '-')} / ${esc(s.state || '-')}</td>
+            <td>${s.applicantCount || 0}</td>
+            <td><span class="badge ${s.status}">${esc(s.status)}</span></td>
+            <td class="mono">${esc((s.createdAt || '').slice(0, 10))}</td>
+            <td>${s.status === 'active' ? `<button class="act danger" onclick="archive('${esc(s.slug)}')">Archive</button>` : `<button class="act" onclick="release('${esc(s.slug)}')">Release slug</button>`}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+async function archive(slug) {
+  if (!confirm(`Archive shop "${slug}"? This hides their apply page from the public.`)) return;
+  await api(`/api/admin/shop/${encodeURIComponent(slug)}/archive`, { method: 'POST' });
+  renderShops();
+}
+async function release(slug) {
+  if (!confirm(`Release slug "${slug}" so someone else can claim it?`)) return;
+  await api('/api/admin/release-slug', { method: 'POST', body: { slug } });
+  renderShops();
+}
+
+async function renderApplicants() {
+  navRender('applicants');
+  root.innerHTML = '<h1>All applicants</h1><p>Loading…</p>';
+  const r = await api('/api/admin/applicants');
+  if (!r.ok) return renderLogin(r.data.error);
+  const list = r.data.applicants || [];
+  root.innerHTML = `
+    <h1>All applicants</h1>
+    <p style="color:var(--mute);margin-bottom:14px">Last ${list.length} applicants across all shops.</p>
+    <div class="card" style="padding:0">
+      <table>
+        <thead><tr><th>When</th><th>Shop</th><th>Name</th><th>Email</th><th>Method</th><th>Lang</th><th>Status</th></tr></thead>
+        <tbody>
+        ${list.map(a => `
+          <tr>
+            <td class="mono">${esc((a.createdAt || '').replace('T', ' ').slice(0, 16))}</td>
+            <td><a href="/apply/${esc(a.slug)}" target="_blank">/apply/${esc(a.slug)}</a></td>
+            <td>${esc(a.name)}</td>
+            <td class="mono">${esc(a.email)}</td>
+            <td>${esc(a.method || 'web')}</td>
+            <td>${esc((a.language || 'en').toUpperCase())}</td>
+            <td>${esc(a.status)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+async function renderAudit() {
+  navRender('audit');
+  root.innerHTML = '<h1>Audit log</h1><p>Loading…</p>';
+  const r = await api('/api/admin/audit');
+  if (!r.ok) return renderLogin(r.data.error);
+  const list = r.data.audit || [];
+  root.innerHTML = `
+    <h1>Audit log</h1>
+    <div class="card" style="padding:0">
+      <table>
+        <thead><tr><th>When</th><th>Event</th><th>Slug</th><th>Details</th></tr></thead>
+        <tbody>
+        ${list.map(a => `
+          <tr>
+            <td class="mono">${esc((a.ts || '').replace('T', ' ').slice(0, 16))}</td>
+            <td>${esc(a.event)}</td>
+            <td class="mono">${esc(a.slug || '')}</td>
+            <td class="mono">${esc(a.email || '')}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>`;
+}
+
+async function render() {
+  const ok = await checkAuth();
+  if (!ok) return renderLogin();
+  const view = new URLSearchParams(location.search).get('view') || 'shops';
+  if (view === 'applicants') return renderApplicants();
+  if (view === 'audit') return renderAudit();
+  return renderShops();
+}
+
+window.archive = archive;
+window.release = release;
+window.logout = logout;
+
+render();
+window.addEventListener('popstate', render);
+</script>
+</body>
+</html>

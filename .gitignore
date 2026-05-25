@@ -24,3 +24,4 @@ yarn-error.log*
 # OS / system
 Thumbs.db
 ehthumbs.db
+.env*

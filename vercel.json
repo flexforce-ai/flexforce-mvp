@@ -1,6 +1,12 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
+  "rewrites": [
+    { "source": "/apply/:slug", "destination": "/api/apply?slug=:slug" },
+    { "source": "/app", "destination": "/app/login.html" },
+    { "source": "/app/", "destination": "/app/login.html" },
+    { "source": "/admin", "destination": "/admin/index.html" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
@@ -19,5 +25,8 @@
   ],
   "redirects": [
     { "source": "/home", "destination": "/", "permanent": true }
+  ],
+  "crons": [
+    { "path": "/api/cron-digest", "schedule": "0 13 * * *" }
   ]
 }
