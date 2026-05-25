@@ -36,8 +36,27 @@ async function readBody(req) {
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\+?[0-9\s\-\(\)\.]{10,20}$/;
 
+function parsePath(req, resource) {
+  const url = req.url || '';
+  const noQuery = url.split('?')[0];
+  const prefix = `/api/${resource}/`;
+  if (!noQuery.startsWith(prefix)) return [];
+  return noQuery.slice(prefix.length).split('/').filter(Boolean);
+}
+
+function queryParam(req, key) {
+  const url = req.url || '';
+  const q = url.split('?')[1];
+  if (!q) return '';
+  for (const part of q.split('&')) {
+    const [k, v] = part.split('=');
+    if (decodeURIComponent(k) === key) return decodeURIComponent(v || '');
+  }
+  return '';
+}
+
 export default async function handler(req, res) {
-  const parts = (req.query.path || []).filter(Boolean);
+  const parts = parsePath(req, 'applicants');
   const [first, second] = parts;
 
   try {
@@ -105,7 +124,7 @@ export default async function handler(req, res) {
 
     // ── POST /api/applicants/webhook (Vapi/Twilio callback) ─────────────
     if (req.method === 'POST' && first === 'webhook') {
-      const secret = req.headers['x-webhook-secret'] || req.query.secret || '';
+      const secret = req.headers['x-webhook-secret'] || queryParam(req, 'secret') || '';
       if (!process.env.VAPI_WEBHOOK_SECRET || secret !== process.env.VAPI_WEBHOOK_SECRET) {
         return json(res, 401, { error: 'bad_secret' });
       }
@@ -130,7 +149,7 @@ export default async function handler(req, res) {
     // Anything below requires auth
     const session = await requireSession(req);
     if (!session) return json(res, 401, { error: 'not_authenticated' });
-    const slug = String(req.query.shop || '').trim();
+    const slug = String(queryParam(req, 'shop') || '').trim();
     if (!slug) return json(res, 400, { error: 'missing_shop_param' });
     const shop = await jsonGet(`shops/${slug}.json`);
     if (!shop) return json(res, 404, { error: 'shop_not_found' });

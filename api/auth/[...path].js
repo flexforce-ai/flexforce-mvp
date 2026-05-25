@@ -40,8 +40,27 @@ async function readBody(req) {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+function parsePath(req, resource) {
+  const url = req.url || '';
+  const noQuery = url.split('?')[0];
+  const prefix = `/api/${resource}/`;
+  if (!noQuery.startsWith(prefix)) return [];
+  return noQuery.slice(prefix.length).split('/').filter(Boolean);
+}
+
+function queryParam(req, key) {
+  const url = req.url || '';
+  const q = url.split('?')[1];
+  if (!q) return '';
+  for (const part of q.split('&')) {
+    const [k, v] = part.split('=');
+    if (decodeURIComponent(k) === key) return decodeURIComponent(v || '');
+  }
+  return '';
+}
+
 export default async function handler(req, res) {
-  const parts = (req.query.path || []).filter(Boolean);
+  const parts = parsePath(req, 'auth');
   const [route] = parts;
 
   try {
@@ -65,7 +84,7 @@ export default async function handler(req, res) {
 
     // ── GET /api/auth/verify?token= ─────────────────────────────────────
     if (req.method === 'GET' && route === 'verify') {
-      const t = String(req.query.token || '');
+      const t = String(queryParam(req, 'token') || '');
       if (!t) return json(res, 400, { error: 'missing_token' });
       const data = await consumeMagicLink(t);
       if (!data) return htmlRedirect(res, '/app/login?error=expired');

@@ -30,8 +30,16 @@ async function readBody(req) {
   });
 }
 
+function parsePath(req, resource) {
+  const url = req.url || '';
+  const noQuery = url.split('?')[0];
+  const prefix = `/api/${resource}/`;
+  if (!noQuery.startsWith(prefix)) return [];
+  return noQuery.slice(prefix.length).split('/').filter(Boolean);
+}
+
 export default async function handler(req, res) {
-  const parts = (req.query.path || []).filter(Boolean);
+  const parts = parsePath(req, 'admin');
   const [first, second, third] = parts;
 
   try {
