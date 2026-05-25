@@ -24,7 +24,7 @@ async function jsonGet(pathname) {
     if (!res.ok) return null;
     return await res.json();
   } catch (e) {
-    if (e.status === 404 || /not\s*found/i.test(String(e.message))) return null;
+    if (e.status === 404 || /not\s*found|does not exist|BlobNotFoundError/i.test(String(e.message || e))) return null;
     throw e;
   }
 }
