@@ -268,7 +268,13 @@ function renderApply(shop) {
   function submitInput() {
     const v = $('userInput').value.trim();
     if (!v) return;
-    if (window._onTextSubmit) { window._onTextSubmit(v); window._onTextSubmit = null; }
+    // Capture handler, null it BEFORE invoking — the handler chain often
+    // installs a fresh _onTextSubmit (next question), and nulling after
+    // the call would wipe that new one out.
+    var handler = window._onTextSubmit;
+    if (!handler) return;
+    window._onTextSubmit = null;
+    handler(v);
   }
 
   function setProgress(p) { $('progBar').style.width = p + '%'; }
