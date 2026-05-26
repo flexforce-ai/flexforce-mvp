@@ -67,13 +67,15 @@ function parseCookies(cookieHeader = '') {
   return out;
 }
 
+const COOKIE_DOMAIN = process.env.COOKIE_DOMAIN || '.flexforce.ai';
+
 function sessionCookie(token, opts = {}) {
   const maxAge = SESSION_TTL_DAYS * 24 * 60 * 60;
-  return `${COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${opts.maxAge ?? maxAge}`;
+  return `${COOKIE_NAME}=${encodeURIComponent(token)}; Path=/; Domain=${COOKIE_DOMAIN}; HttpOnly; Secure; SameSite=Lax; Max-Age=${opts.maxAge ?? maxAge}`;
 }
 
 function clearSessionCookie() {
-  return `${COOKIE_NAME}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
+  return `${COOKIE_NAME}=; Path=/; Domain=${COOKIE_DOMAIN}; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
 }
 
 async function requireSession(req) {
@@ -95,11 +97,11 @@ function isAdminAuthorized(req) {
 
 function adminCookie() {
   const pass = process.env.ADMIN_PASSWORD || '';
-  return `ff_admin=${encodeURIComponent(pass)}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}`;
+  return `ff_admin=${encodeURIComponent(pass)}; Path=/; Domain=${COOKIE_DOMAIN}; HttpOnly; Secure; SameSite=Lax; Max-Age=${30 * 24 * 60 * 60}`;
 }
 
 function clearAdminCookie() {
-  return `ff_admin=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
+  return `ff_admin=; Path=/; Domain=${COOKIE_DOMAIN}; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
 }
 
 export {
