@@ -817,45 +817,76 @@ function renderImport() {
   root.innerHTML = `
     <div class="narrow">
       <h1>Import a job post</h1>
-      <p class="sub">Paste an Indeed / Craigslist / ZipRecruiter URL and we'll pull the title, location, pay, and description into your apply page setup.</p>
+      <p class="sub">Pull title, location, pay, and description into your apply page setup. Two ways:</p>
       <div class="card">
+        <h2>Option 1 — URL</h2>
+        <p class="sub" style="margin-bottom:10px;font-size:13px">Works for most boards. Indeed and LinkedIn block server requests — for those, use Option 2 or set up ScrapingBee.</p>
         <div class="field">
           <label>Job post URL</label>
           <input id="i_url" placeholder="https://www.indeed.com/viewjob?jk=...">
         </div>
-        <button class="btn" id="iGo">Import →</button>
+        <button class="btn" id="iGoUrl">Import from URL →</button>
         <div id="iResult" style="margin-top:14px"></div>
       </div>
+      <div class="card">
+        <h2>Option 2 — Paste the job post</h2>
+        <p class="sub" style="margin-bottom:10px;font-size:13px">Open the Indeed/Craigslist page in your browser, select-all (Cmd+A), copy, paste below. Works for any board.</p>
+        <div class="field">
+          <label>Job post text</label>
+          <textarea id="i_text" rows="8" placeholder="Paste the full job posting here — title, pay, description, perks…"></textarea>
+        </div>
+        <button class="btn" id="iGoText">Import from text →</button>
+        <div id="iResultText" style="margin-top:14px"></div>
+      </div>
     </div>`;
-  $('iGo').addEventListener('click', async () => {
+
+  const runImport = async (body, btnEl, resultEl) => {
+    btnEl.disabled = true; const orig = btnEl.textContent; btnEl.textContent = 'Importing…';
+    const r = await api('/api/import', { method: 'POST', body });
+    btnEl.disabled = false; btnEl.textContent = orig;
+    if (!r.ok) {
+      resultEl.innerHTML = alert('error', r.data.message || r.data.error || 'Import failed.');
+      return null;
+    }
+    return r.data.parsed;
+  };
+
+  $('iGoUrl').addEventListener('click', async () => {
     const url = $('i_url').value.trim();
     if (!url) return;
-    $('iGo').disabled = true; $('iGo').textContent = 'Importing…';
-    const r = await api('/api/import', { method: 'POST', body: { url } });
-    $('iGo').disabled = false; $('iGo').textContent = 'Import →';
-    if (!r.ok) { $('iResult').innerHTML = alert('error', r.data.error || 'Import failed.'); return; }
-    const p = r.data.parsed;
-    // Pre-fill wizard
-    wizard.data = {
-      shopName: '',
-      slug: '',
-      trade: p.tradeGuess || 'other',
-      state: '',
-      city: (p.location || '').split(',')[0]?.trim() || '',
-      job: {
-        title: p.title || '',
-        payLow: p.payLow || 0,
-        payHigh: p.payHigh || 0,
-        summary: (p.description || '').slice(0, 500),
-        schedule: p.schedule || 'Full-time',
-        perks: []
-      },
-      brand: BRAND_PRESETS[0],
-      languages: ['en']
-    };
-    wizard.step = 0;
-    setView('onboard');
+    const p = await runImport({ url }, $('iGoUrl'), $('iResult'));
+    if (!p) return;
+    fillWizardFrom(p);
   });
+  $('iGoText').addEventListener('click', async () => {
+    const text = $('i_text').value.trim();
+    if (!text || text.length < 80) { $('iResultText').innerHTML = alert('error', 'Paste at least 80 characters of the job post.'); return; }
+    const p = await runImport({ text }, $('iGoText'), $('iResultText'));
+    if (!p) return;
+    fillWizardFrom(p);
+  });
+}
+
+function fillWizardFrom(p) {
+  wizard.data = {
+    shopName: '',
+    slug: '',
+    trade: p.tradeGuess || 'other',
+    state: '',
+    city: (p.location || '').split(',')[0]?.trim() || '',
+    job: {
+      title: p.title || '',
+      payLow: p.payLow || 0,
+      payHigh: p.payHigh || 0,
+      summary: (p.description || '').slice(0, 500),
+      schedule: p.schedule || 'Full-time',
+      perks: []
+    },
+    brand: BRAND_PRESETS[0],
+    languages: ['en']
+  };
+  wizard.step = 0;
+  setView('onboard');
 }
 
 // ---------- ROUTING ----------

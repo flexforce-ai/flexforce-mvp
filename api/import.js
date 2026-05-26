@@ -28,9 +28,10 @@ async function readBody(req) {
 async function fetchHtml(url) {
   const sb = process.env.SCRAPINGBEE_API_KEY;
   if (sb) {
-    const u = `https://app.scrapingbee.com/api/v1/?api_key=${sb}&url=${encodeURIComponent(url)}&render_js=true`;
+    // Premium proxy + JS render — required for Indeed/LinkedIn/etc.
+    const u = `https://app.scrapingbee.com/api/v1/?api_key=${sb}&url=${encodeURIComponent(url)}&render_js=true&premium_proxy=true`;
     const r = await fetch(u);
-    if (!r.ok) throw new Error('scrape_failed_' + r.status);
+    if (!r.ok) throw new Error('scrape_failed_' + r.status + ' (set SCRAPINGBEE_API_KEY plan that includes premium_proxy if Indeed/LinkedIn)');
     return await r.text();
   }
   // Direct fetch with browser-ish headers
@@ -42,7 +43,13 @@ async function fetchHtml(url) {
       'Accept-Language': 'en-US,en;q=0.9'
     }
   });
-  if (!r.ok) throw new Error('fetch_failed_' + r.status);
+  if (!r.ok) {
+    // Indeed/LinkedIn block Vercel data-center IPs with 403. Surface a useful error.
+    const hint = r.status === 403
+      ? 'This site blocks server-side requests (common for Indeed/LinkedIn). Paste the job text directly, or set SCRAPINGBEE_API_KEY in Vercel env vars.'
+      : `HTTP ${r.status}`;
+    throw new Error(hint);
+  }
   return await r.text();
 }
 
@@ -149,12 +156,20 @@ export default async function handler(req, res) {
 
   const body = await readBody(req);
   const url = String(body.url || '').trim();
+  const text = String(body.text || '').trim();
+
+  // Mode 1: raw text paste — extract directly, no fetch needed.
+  if (text) {
+    const parsed = parseJobPost(text, url || 'pasted://text');
+    return json(res, 200, { parsed, mode: 'text' });
+  }
+
   if (!url || !/^https?:\/\//.test(url)) return json(res, 400, { error: 'invalid_url' });
 
   try {
     const html = await fetchHtml(url);
     const parsed = parseJobPost(html, url);
-    return json(res, 200, { parsed });
+    return json(res, 200, { parsed, mode: process.env.SCRAPINGBEE_API_KEY ? 'scrapingbee' : 'direct' });
   } catch (e) {
     console.error('[import]', e);
     return json(res, 502, { error: 'fetch_failed', message: String(e.message || e) });
