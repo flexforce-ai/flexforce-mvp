@@ -44,7 +44,7 @@ async function sendShopCreated({ to, shop }) {
       <h1 style="margin:0 0 16px;font-size:22px;font-weight:500;letter-spacing:-.01em">your apply page is live</h1>
       <p style="margin:0 0 12px;color:#2f4a3f;line-height:1.55">${esc(shop.shopName)} is set up. Share this link wherever you currently take applicants — Indeed, Craigslist, Facebook, your truck:</p>
       <div style="background:#f6f3ee;border:1px solid #e0d9c8;border-radius:10px;padding:16px;margin:14px 0;font-family:'JetBrains Mono',monospace;font-size:14px"><a style="color:#1d4d3d;text-decoration:none" href="${esc(url)}">${esc(url)}</a></div>
-      <a href="https://flexforce.ai/app/dashboard" style="display:inline-block;background:#1d4d3d;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-weight:500">open dashboard →</a>
+      <a href="https://flexforce.ai/app/?view=dashboard" style="display:inline-block;background:#1d4d3d;color:#fff;text-decoration:none;padding:14px 28px;border-radius:8px;font-weight:500">open dashboard →</a>
       <p style="margin:24px 0 0;font-size:13px;color:#5a6e64;line-height:1.55">Next steps in your dashboard: copy the link, generate the QR code, import an existing Indeed post.</p>
     </div>
   </body></html>`;
@@ -60,7 +60,7 @@ async function sendApplicantToShop({ to, shop, applicant }) {
       <p style="margin:0 0 16px;font-size:13px;color:#5a6e64">${esc(applicant.email)} · ${esc(applicant.phone)} · ${esc(applicant.method || 'web')}</p>
       <table style="width:100%;font-size:14px;border-collapse:collapse">${lines}</table>
       <div style="margin-top:24px;padding-top:18px;border-top:1px solid #e0d9c8">
-        <a href="https://flexforce.ai/app/applicants" style="display:inline-block;background:#1d4d3d;color:#fff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:500;font-size:14px">view in dashboard →</a>
+        <a href="https://flexforce.ai/app/?view=applicants" style="display:inline-block;background:#1d4d3d;color:#fff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:500;font-size:14px">view in dashboard →</a>
       </div>
     </div>
   </body></html>`;
@@ -89,7 +89,7 @@ async function sendDailyDigest({ to, shop, applicants }) {
       <h1 style="margin:0 0 14px;font-size:20px;font-weight:500">${applicants.length} new applicant${applicants.length === 1 ? '' : 's'} yesterday</h1>
       <table style="width:100%;font-size:14px;border-collapse:collapse">${rows}</table>
       <div style="margin-top:22px;padding-top:18px;border-top:1px solid #e0d9c8">
-        <a href="https://flexforce.ai/app/applicants" style="display:inline-block;background:#1d4d3d;color:#fff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:500;font-size:14px">review applicants →</a>
+        <a href="https://flexforce.ai/app/?view=applicants" style="display:inline-block;background:#1d4d3d;color:#fff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:500;font-size:14px">review applicants →</a>
       </div>
     </div>
   </body></html>`;
