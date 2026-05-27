@@ -54,7 +54,11 @@ async function fetchHtml(url) {
 }
 
 function stripTags(s) {
-  return String(s || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  return String(s || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#39;|&apos;/g, "'").replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ').trim();
 }
 
 function extractText(html, selector) {
@@ -88,24 +92,27 @@ function parseJobPost(html, sourceUrl) {
   // Location
   out.location = findFirst(html, [
     /<meta[^>]+property=["']og:locality["'][^>]+content=["']([^"']+)["']/i,
+    /"formattedLocation"\s*:\s*"([^"]+)"/i,
     /"jobLocation"[^}]*?"addressLocality"\s*:\s*"([^"]+)"/i,
-    /class="[^"]*location[^"]*"[^>]*>([^<]{2,60})</i,
+    /data-testid="[^"]*[Ll]ocation[^"]*"[^>]*>([^<]{2,60})</i,
+    /id="jobLocationText"[^>]*>\s*<div[^>]*>([^<]{2,60})</i,
     /\b([A-Z][a-z]+(?:[\s\-][A-Z][a-z]+)*,\s*[A-Z]{2})\b/
   ]);
 
-  // Pay — try to find dollar ranges
-  const payMatch = html.match(/\$\s*([0-9]{1,3}(?:,[0-9]{3})*(?:\.[0-9]{2})?)\s*[\-–to ]+\s*\$\s*([0-9]{1,3}(?:,[0-9]{3})*)\s*(\/?\s*(?:hr|hour|hr\.|per hour))/i)
-    || html.match(/([0-9]{2,3})\s*[\-–]\s*([0-9]{2,3})\s*(?:\/|per)\s*(?:hr|hour)/i);
-  if (payMatch) {
-    out.payLow = Number(String(payMatch[1]).replace(/,/g, ''));
-    out.payHigh = Number(String(payMatch[2]).replace(/,/g, ''));
-  } else {
-    // Annual salary?
-    const ann = html.match(/\$\s*([0-9]{2,3}(?:,[0-9]{3})?)\s*[\-–]\s*\$\s*([0-9]{2,3}(?:,[0-9]{3})?)\s*(?:\/year|per year|annually)/i);
-    if (ann) {
-      out.payLow = Math.round(Number(ann[1].replace(/,/g, '')) / 2080);
-      out.payHigh = Math.round(Number(ann[2].replace(/,/g, '')) / 2080);
-    }
+  // Pay — hourly first (most trades). Handles "$50 - $65 an hour", "$50/hr",
+  // "$50 to $65 per hour", "$65 hourly".
+  const payHourlyRange = html.match(/\$\s*([0-9]{1,3}(?:\.[0-9]{1,2})?)\s*(?:[-–]|to)\s*\$?\s*([0-9]{1,3}(?:\.[0-9]{1,2})?)\s*(?:an?\s+hour|\/\s*(?:hr|hour)|per\s+hour|hourly|hr\b)/i);
+  const payHourlySingle = html.match(/\$\s*([0-9]{1,3}(?:\.[0-9]{1,2})?)\s*(?:an?\s+hour|\/\s*(?:hr|hour)|per\s+hour|hourly)/i);
+  const payAnnualRange = html.match(/\$\s*([0-9]{2,3}(?:,[0-9]{3})?)\s*(?:[-–]|to)\s*\$?\s*([0-9]{2,3}(?:,[0-9]{3})?)\s*(?:a\s+year|per\s+year|annually|\/\s*year)/i);
+  if (payHourlyRange) {
+    out.payLow = Math.round(Number(payHourlyRange[1]));
+    out.payHigh = Math.round(Number(payHourlyRange[2]));
+  } else if (payAnnualRange) {
+    out.payLow = Math.round(Number(payAnnualRange[1].replace(/,/g, '')) / 2080);
+    out.payHigh = Math.round(Number(payAnnualRange[2].replace(/,/g, '')) / 2080);
+  } else if (payHourlySingle) {
+    const v = Math.round(Number(payHourlySingle[1]));
+    out.payLow = v; out.payHigh = v;
   }
 
   // Description — try JSON-LD schema first, then largest <p> block
@@ -130,8 +137,19 @@ function parseJobPost(html, sourceUrl) {
       } catch (e) {}
     }
   }
+  // Indeed-specific: the job body lives in #jobDescriptionText. Extract a
+  // chunk from that id forward and strip tags (nested divs make a clean
+  // regex capture unreliable, so we slice a window and clean it).
   if (!out.description) {
-    // Fall back to og:description or the largest single <p>
+    const idx = html.search(/id=["']jobDescriptionText["']/i);
+    if (idx >= 0) {
+      const chunk = html.slice(idx, idx + 9000);
+      const cleaned = stripTags(chunk.replace(/^[^>]*>/, ''));
+      if (cleaned.length > 40) out.description = cleaned.slice(0, 1500);
+    }
+  }
+  if (!out.description) {
+    // Fall back to og:description or meta description
     out.description = findFirst(html, [
       /<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i,
       /<meta[^>]+name=["']description["'][^>]+content=["']([^"']+)["']/i
